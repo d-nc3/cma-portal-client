@@ -16,6 +16,7 @@ const initialValues = {
   email: '',
   password: '',
   changepassword: '',
+  dateofbirth: '',
   acceptTerms: false,
 }
 
@@ -59,10 +60,10 @@ export function Registration() {
           values.firstname,
           values.lastname,
           values.password,
-          values.changepassword
+          values.dateofbirth
         )
         saveAuth(auth)
-        const {data: user} = await getUserByToken(auth.api_token)
+        const {data: user} = await getUserByToken()
         setCurrentUser(user)
       } catch (error) {
         console.error(error)
