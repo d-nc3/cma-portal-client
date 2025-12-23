@@ -26,13 +26,17 @@ export function updateUser(values: any) {
   })
 }
 
-export async function getUsers(query?: string) {
+export async function getUsers(token, query?: string) {
   try {
  
-    return await axios.get(GET_USER_URL, {
-      withCredentials: true, 
-    })
+    const header_config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    const response = await axios.get(GET_USER_URL, header_config)
 
+    return response.data
   } catch (error: any) {
     console.error('Error fetching users:', error.response?.data || error.message)
     throw error

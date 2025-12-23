@@ -15,15 +15,13 @@ type Props = {
 }
 
 const editUserSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong email format')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
   name: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Name is required'),
+  description: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .required('Description is required'),
 })
 
 const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
@@ -47,6 +45,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
   const formik = useFormik({
     initialValues: roleForEdit,
     validationSchema: editUserSchema,
+    enableReinitialize: true, // only if you want to update form with new data
     onSubmit: async (values, {setSubmitting}) => {
       setSubmitting(true)
       try {

@@ -20,11 +20,23 @@ const editUserSchema = Yup.object().shape({
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
-  name: Yup.string()
+
+  first_name: Yup.string()
     .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Name is required'),
+    .required('First name is required'),
+
+  last_name: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .required('Last name is required'),
+
+  password: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .required('Password is required'),
+
+  role: Yup.string() // if role is a string (role name or id)
+    .required('Role is required'),
 })
+
 
 const UserEditModalForm: FC<Props> = ({user, isUserLoading}) => {
   const {setItemIdForUpdate} = useListView()
