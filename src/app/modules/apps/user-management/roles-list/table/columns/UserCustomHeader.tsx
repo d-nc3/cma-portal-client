@@ -3,12 +3,12 @@ import {FC, PropsWithChildren, useMemo} from 'react'
 import {HeaderProps} from 'react-table'
 import {initialQueryState} from '../../../../../../../_metronic/helpers'
 import {useQueryRequest} from '../../core/QueryRequestProvider'
-import {UserModel} from '../../core/_models'
+import {RoleModel} from '../../core/_models'
 
 type Props = {
   className?: string
   title?: string
-  tableProps: PropsWithChildren<HeaderProps<UserModel>>
+  tableProps: PropsWithChildren<HeaderProps<RoleModel>>
 }
 const UserCustomHeader: FC<Props> = ({className, title, tableProps}) => {
   const id = tableProps.column.id

@@ -11,10 +11,10 @@ import {
   WithChildren,
 } from '../../../../../../_metronic/helpers'
 import {getUsers} from './_requests'
-import {UserModel} from './_models'
+import {RoleModel} from './_models'
 import {useQueryRequest} from './QueryRequestProvider'
 
-const QueryResponseContext = createResponseContext<UserModel>(initialQueryResponse)
+const QueryResponseContext = createResponseContext<RoleModel>(initialQueryResponse)
 const QueryResponseProvider: FC<WithChildren> = ({children}) => {
   const {state} = useQueryRequest()
   const [query, setQuery] = useState<string>(stringifyRequestQuery(state))

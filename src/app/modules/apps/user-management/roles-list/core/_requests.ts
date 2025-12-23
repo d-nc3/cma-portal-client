@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {UserModel} from './_models'
+import {RoleModel} from './_models'
 const API_URL = process.env.REACT_APP_API_URL
 
 export const REGISTER_URL = `${API_URL}/api/users/register`
@@ -40,5 +40,5 @@ export async function getUsers(query?: string) {
 }
 
 export function getUserById(userId) {
-  return axios.get<UserModel>(`${GET_USER_BY_ID}/${userId}`).then((res) => res.data)
+  return axios.get<RoleModel>(`${GET_USER_BY_ID}/${userId}`).then((res) => res.data)
 }

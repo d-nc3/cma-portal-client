@@ -1,10 +1,10 @@
 import {FC, PropsWithChildren} from 'react'
 import {HeaderProps} from 'react-table'
 import {useListView} from '../../core/ListViewProvider'
-import {UserModel} from '../../core/_models'
+import {RoleModel} from '../../core/_models'
 
 type Props = {
-  tableProps: PropsWithChildren<HeaderProps<UserModel>>
+  tableProps: PropsWithChildren<HeaderProps<RoleModel>>
 }
 
 const UserSelectionHeader: FC<Props> = ({tableProps}) => {

@@ -2,13 +2,13 @@
 import clsx from 'clsx'
 import {FC} from 'react'
 import {toAbsoluteUrl} from '../../../../../../../_metronic/helpers'
-import {UserModel} from '../../core/_models'
+import {RoleModel} from '../../core/_models'
 
 type Props = {
-  user: UserModel
+  role: RoleModel
 }
 
-const UserInfoCell: FC<Props> = ({user}) => (
+const UserInfoCell: FC<Props> = ({role}) => (
   <div className='d-flex align-items-center'>
     {/* begin:: Avatar */}
     <div className='symbol symbol-circle symbol-50px overflow-hidden me-3'>
@@ -32,9 +32,9 @@ const UserInfoCell: FC<Props> = ({user}) => (
     </div>
     <div className='d-flex flex-column'>
       <a href='#' className='text-gray-800 text-hover-primary mb-1'>
-        {user.fullname}
+        {role.name}
       </a>
-      <span>{user.email}</span>
+      <span>{role.description}</span>
     </div>
   </div>
 )
