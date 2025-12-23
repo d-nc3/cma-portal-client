@@ -3,6 +3,7 @@ import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 
 const SocialAuth = () => {
   return (
+    <>
     <div className='row g-3 mb-9'>
         {/* begin::Col */}
         <div className='col-md-6'>
@@ -45,6 +46,10 @@ const SocialAuth = () => {
         </div>
         {/* end::Col */}
       </div>
+      <div className='separator separator-content my-14'>
+        <span className='w-125px text-gray-500 fw-semibold fs-7'>Or with email</span>
+      </div>
+      </>
   )
 }
 
