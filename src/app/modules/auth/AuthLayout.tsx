@@ -89,7 +89,7 @@ const AuthLayout = () => {
                 CMA Portal
               </a>
               is a centralized platform designed to <br />
-              manage applications, track submissions, and provide updates about
+              manage applications, track submissions, and provide updates about{" "}
               <a href='#' className='opacity-75-hover text-warning fw-bold me-1'>
                 CMA services
               </a>
