@@ -95,14 +95,8 @@ export function Registration() {
         <div className='text-gray-500 fw-semibold fs-6'>Your Social Campaigns</div>
       </div>
       {/* end::Heading */}
-
-      {/* begin::Login options */}
+      
       {/* <SocialAuth /> */}
-      {/* end::Login options */}
-
-      <div className='separator separator-content my-14'>
-        <span className='w-125px text-gray-500 fw-semibold fs-7'>Or with email</span>
-      </div>
 
       {formik.status && (
         <div className='mb-lg-15 alert alert-danger'>

@@ -77,15 +77,7 @@ export function Login() {
       </div>
       {/* begin::Heading */}
 
-      {/* begin::Login options */}
       {/* <SocialAuth /> */}
-      {/* end::Login options */}
-
-      {/* begin::Separator */}
-      <div className='separator separator-content my-14'>
-        <span className='w-125px text-gray-500 fw-semibold fs-7'>Or with email</span>
-      </div>
-      {/* end::Separator */}
 
       {formik.status ? (
         <div className='mb-lg-15 alert alert-danger'>
