@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {UserModel} from './_models'
+import { getAuth } from '../../../../auth'
 const API_URL = process.env.REACT_APP_API_URL
 
 export const REGISTER_URL = `${API_URL}/api/users/register`
@@ -9,6 +10,18 @@ export const EDIT_USERS_URL = `${API_URL}/api/users/updateUser`
 export const GET_USER_BY_ID = `${API_URL}/api/users/getUserById`
 
 axios.defaults.withCredentials = true
+axios.interceptors.request.use(
+  (config) => {
+    const auth = getAuth();
+    if (auth && auth.token) {
+      config.headers.Authorization = `Bearer ${auth.token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Server should return AuthModel
 export function register(values: any) {
@@ -26,15 +39,10 @@ export function updateUser(values: any) {
   })
 }
 
-export async function getUsers(token, query?: string) {
+export async function getUsers() {
   try {
- 
-    const header_config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-    const response = await axios.get(GET_USER_URL, header_config)
+
+    const response = await axios.get(GET_USER_URL)
 
     return response.data
   } catch (error: any) {
