@@ -1,14 +1,13 @@
 import {KTIcon} from '../../../../../../_metronic/helpers'
 import {useListView} from '../core/ListViewProvider'
 
-
-const UserEditModalHeader = () => {
+const RoleEditModalHeader = () => {
   const {setItemIdForUpdate} = useListView()
 
   return (
     <div className='modal-header'>
       {/* begin::Modal title */}
-      <h2 className='fw-bolder'>Add User</h2>
+      <h2 className='fw-bolder'>Add Roles</h2>
       {/* end::Modal title */}
 
       {/* begin::Close */}
@@ -25,4 +24,4 @@ const UserEditModalHeader = () => {
   )
 }
 
-export {UserEditModalHeader}
+export {RoleEditModalHeader}

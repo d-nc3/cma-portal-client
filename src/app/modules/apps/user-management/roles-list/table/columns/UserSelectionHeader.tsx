@@ -1,10 +1,10 @@
 import {FC, PropsWithChildren} from 'react'
 import {HeaderProps} from 'react-table'
 import {useListView} from '../../core/ListViewProvider'
-import {UserModel} from '../../core/_models'
+import {RoleModel} from '../../core/_models'
 
 type Props = {
-  tableProps: PropsWithChildren<HeaderProps<UserModel>>
+  tableProps: PropsWithChildren<HeaderProps<RoleModel>>
 }
 
 const UserSelectionHeader: FC<Props> = ({tableProps}) => {
@@ -16,7 +16,7 @@ const UserSelectionHeader: FC<Props> = ({tableProps}) => {
           className='form-check-input'
           type='checkbox'
           data-kt-check={isAllSelected}
-          data-kt-check-target='#kt_table_users .form-check-input'
+          data-kt-check-target='#kt_table_role .form-check-input'
           checked={isAllSelected}
           onChange={onSelectAll}
         />

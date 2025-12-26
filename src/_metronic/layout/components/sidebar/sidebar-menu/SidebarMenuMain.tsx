@@ -98,8 +98,7 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/apps/chat/group-chat' title='Group Chart' hasBullet={true} />
         <SidebarMenuItem to='/apps/chat/drawer-chat' title='Drawer Chart' hasBullet={true} />
       </SidebarMenuItemWithSub>
-      
-        <SidebarMenuItemWithSub
+      <SidebarMenuItemWithSub
         to='/apps/user-management'
         title='User-management'
         fontIcon='bi-chat-left'
@@ -107,10 +106,8 @@ const SidebarMenuMain = () => {
       >
         <SidebarMenuItem to='/apps/user-management/users' title='Users' hasBullet={true} />
         <SidebarMenuItem to='/apps/user-management/roles' title='Roles' hasBullet={true} />
-        <SidebarMenuItem to='/apps/chat/permissions' title='Permissions' hasBullet={true} />
+        <SidebarMenuItem to='/apps/user-management/permissions' title='Permissions' hasBullet={true} />
       </SidebarMenuItemWithSub>
-
-
       <div className='menu-item'>
         <a
           target='_blank'

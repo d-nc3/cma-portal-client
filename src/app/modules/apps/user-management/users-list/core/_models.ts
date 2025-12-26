@@ -1,27 +1,20 @@
 import {ID, Response} from '../../../../../../_metronic/helpers'
-export type User = {
-  id?: ID
-  name?: string
-  avatar?: string
+export interface UserModel {
+  id?: number
+  username?: string
+  password?: string | undefined
   email?: string
-  position?: string
-  role?: string
-  last_login?: string
-  two_steps?: boolean
-  joined_day?: string
-  online?: boolean
-  initials?: {
-    label: string
-    state: string
-  }
+  first_name?: string
+  last_name?: string
+  fullname?: string
+  occupation?: string
+  companyName?: string
+  phone?: string
+  role?: Array<number>
+  pic?: string
+  language?: 'en' | 'de' | 'es' | 'fr' | 'ja' | 'zh' | 'ru'
+  timeZone?: string
+  website?: 'https://keenthemes.com'
 }
 
-export type UsersQueryResponse = Response<Array<User>>
 
-export const initialUser: User = {
-  avatar: 'avatars/300-6.jpg',
-  position: 'Art Director',
-  role: 'Administrator',
-  name: '',
-  email: '',
-}
