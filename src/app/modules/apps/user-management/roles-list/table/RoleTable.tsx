@@ -5,8 +5,8 @@ import {CustomRow} from '../table/columns/CustomRow'
 import {useQueryResponseData, useQueryResponseLoading} from '../core/QueryResponseProvider'
 import {usersColumns} from './columns/_columns'
 import {RoleModel} from '../core/_models'
-import {UsersListLoading} from '../components/loading/RoleListLoading'
-import {UsersListPagination} from '../components/pagination/RoleListPagination'
+import {UsersListLoading} from '../components/loading/UsersListLoading'
+import {UsersListPagination} from '../components/pagination/UsersListPagination'
 import {KTCardBody} from '../../../../../../_metronic/helpers'
 
 const UsersTable = () => {

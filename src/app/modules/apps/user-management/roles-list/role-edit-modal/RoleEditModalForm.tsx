@@ -5,7 +5,7 @@ import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
 import {RoleModel} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from '../core/ListViewProvider'
-import {UsersListLoading} from '../components/loading/RoleListLoading'
+import {UsersListLoading} from '../components/loading/UsersListLoading'
 import {updateUser, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 

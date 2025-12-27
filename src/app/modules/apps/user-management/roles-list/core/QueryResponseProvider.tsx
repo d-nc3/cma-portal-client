@@ -31,9 +31,9 @@ const QueryResponseProvider: FC<WithChildren> = ({children}) => {
       refetch,
       data: response,
     } = useQuery(
-      `${QUERIES.ROLES_LIST}-${query}`,
+      `${QUERIES.USERS_LIST}-${query}`,
       () => {
-        return getRoles()
+        return getRoles(query)
       },
       {cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false}
     )
