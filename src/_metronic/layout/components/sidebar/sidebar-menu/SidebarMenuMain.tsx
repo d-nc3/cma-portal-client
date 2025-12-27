@@ -58,6 +58,38 @@ const SidebarMenuMain = () => {
         </SidebarMenuItemWithSub>
       </SidebarMenuItemWithSub>
       <SidebarMenuItemWithSub
+          to='/driver/pages'
+          title='Driver Pages'
+          fontIcon='bi-archive'
+          icon='profile-circle'
+        >
+        <SidebarMenuItemWithSub to='/driver/profile' title='Profile' hasBullet={true}>
+          <SidebarMenuItem to='/driver/overview' title='Overview' hasBullet={true} />
+          <SidebarMenuItem to='/driver/projects' title='Projects' hasBullet={true} />
+          <SidebarMenuItem
+            to='/driver/campaigns'
+            title='Campaigns'
+            hasBullet={true}
+          />
+          <SidebarMenuItem
+            to='/driver/documents'
+            title='Documents'
+            hasBullet={true}
+          />
+          <SidebarMenuItem
+            to='/driver/connections'
+            title='Connections'
+            hasBullet={true}
+          />
+          <SidebarMenuItem
+            to='/driver/violation'
+            title='Violation'
+            hasBullet={true}
+          />
+          <SidebarMenuItem to='/driver/apprehension' title='Apprehension' hasBullet={true} />
+        </SidebarMenuItemWithSub>
+      </SidebarMenuItemWithSub>
+      <SidebarMenuItemWithSub
         to='/crafted/accounts'
         title='Accounts'
         icon='profile-circle'
