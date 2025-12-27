@@ -1,7 +1,7 @@
 import {ListViewProvider, useListView} from '../roles-list/core/ListViewProvider'
 import {QueryRequestProvider} from '../roles-list/core/QueryRequestProvider'
 import {QueryResponseProvider} from '../roles-list/core/QueryResponseProvider'
-import {UsersListHeader} from '../roles-list/components/header/UsersListHeader'
+import {UsersListHeader} from './components/header/RoleListHeader'
 import {UsersTable} from '../roles-list/table/RoleTable'
 import {UserEditModal} from './role-edit-modal/RoleEditModal'
 import {KTCard} from '../../../../../_metronic/helpers'

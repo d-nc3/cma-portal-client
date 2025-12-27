@@ -1,7 +1,7 @@
 import {useListView} from '../../core/ListViewProvider'
-import {UsersListToolbar} from './UserListToolbar'
-import {UsersListGrouping} from './UsersListGrouping'
-import {UsersListSearchComponent} from './UsersListSearchComponent'
+import {UsersListToolbar} from './RoleListToolbar'
+import {UsersListGrouping} from './RoleListGrouping'
+import {UsersListSearchComponent} from './RoleListSearchComponent'
 
 const UsersListHeader = () => {
   const {selected} = useListView()

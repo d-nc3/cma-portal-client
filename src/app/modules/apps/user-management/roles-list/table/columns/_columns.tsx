@@ -1,10 +1,10 @@
 import { Column } from 'react-table'
-import { UserInfoCell } from './UserInfoCell'
-import { UserLastLoginCell } from './UserLastLoginCell'
-import { UserActionsCell } from './UserActionsCell'
-import { UserSelectionCell } from './UserSelectionCell'
-import { UserCustomHeader } from './UserCustomHeader'
-import { UserSelectionHeader } from './UserSelectionHeader'
+import { UserInfoCell } from './RoleInfoCell'
+import { UserLastLoginCell } from './RoleLastLoginCell'
+import { UserActionsCell } from './RoleActionCell'
+import { UserSelectionCell } from './RoleSelectionCell'
+import { UserCustomHeader } from './RoleCustomHeader'
+import { UserSelectionHeader } from './RoleSelectionHeader'
 import { RoleModel } from '../../core/_models'
 
 const usersColumns: ReadonlyArray<Column<RoleModel>> = [
