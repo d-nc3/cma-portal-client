@@ -1,7 +1,6 @@
 import { Column } from 'react-table'
-import { UserInfoCell } from './RoleInfoCell'
-import { UserLastLoginCell } from './RoleLastLoginCell'
-import { UserActionsCell } from './RoleActionCell'
+import { UserInfoCell } from './RoleInfoCell'   
+import { RoleActionCell } from './RoleActionCell'
 import { UserSelectionCell } from './RoleSelectionCell'
 import { UserCustomHeader } from './RoleCustomHeader'
 import { UserSelectionHeader } from './RoleSelectionHeader'
@@ -26,7 +25,7 @@ const usersColumns: ReadonlyArray<Column<RoleModel>> = [
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='Actions' className='text-end min-w-50px' />,
     id: 'actions',
-    Cell: ({ row }) => <UserActionsCell id={row.original.id} />,
+    Cell: ({ row }) => <RoleActionCell id={row.original.id} />,
   },
 ]
 

@@ -2,7 +2,7 @@ import {useEffect} from 'react'
 import {RoleEditModalHeader} from './RoleEditModalHeader'
 import {RoleEditModalFormWrapper} from './RoleEditModalFormWrapper'
 
-const UserEditModal = () => {
+const RoleEditModal = () => {
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => {
@@ -14,7 +14,7 @@ const UserEditModal = () => {
     <>
       <div
         className='modal fade show d-block'
-        id='kt_modal_add_user'
+        id='kt_modal_add_role'
         role='dialog'
         tabIndex={-1}
         aria-modal='true'
@@ -41,4 +41,4 @@ const UserEditModal = () => {
   )
 }
 
-export {UserEditModal}
+export {RoleEditModal}

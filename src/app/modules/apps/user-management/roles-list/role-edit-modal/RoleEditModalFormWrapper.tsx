@@ -2,19 +2,20 @@ import {useQuery} from 'react-query'
 import {RoleEditModalForm} from './RoleEditModalForm'
 import {isNotEmpty, QUERIES} from '../../../../../../_metronic/helpers'
 import {useListView} from '../core/ListViewProvider'
-import {getUserById} from '../core/_requests'
+import {getRoleById} from '../core/_requests'
 
 const RoleEditModalFormWrapper = () => {
   const {itemIdForUpdate, setItemIdForUpdate} = useListView()
   const enabledQuery: boolean = isNotEmpty(itemIdForUpdate)
+  
   const {
     isLoading,
-    data: user,
+    data: role,
     error,
   } = useQuery(
-    `${QUERIES.USERS_LIST}-user-${itemIdForUpdate}`,
+    `${QUERIES.ROLES_LIST}-role-${itemIdForUpdate}`,
     () => {
-      return getUserById(itemIdForUpdate)
+      return getRoleById(itemIdForUpdate)
     },
     {
       cacheTime: 0,
@@ -30,8 +31,8 @@ const RoleEditModalFormWrapper = () => {
     return <RoleEditModalForm isRoleLoading={isLoading} role={{id: undefined}} />
   }
 
-  if (!isLoading && !error && user) {
-    return <RoleEditModalForm isRoleLoading={isLoading} role={user} />
+  if (!isLoading && !error && role) {
+    return <RoleEditModalForm isRoleLoading={isLoading} role={role} />
   }
 
   return null

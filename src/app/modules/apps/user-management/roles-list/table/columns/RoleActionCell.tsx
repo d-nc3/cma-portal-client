@@ -11,7 +11,7 @@ type Props = {
   id: ID
 }
 
-const UserActionsCell: FC<Props> = ({id}) => {
+const RoleActionCell: FC<Props> = ({id}) => {
   const {setItemIdForUpdate} = useListView()
   const {query} = useQueryResponse()
   const queryClient = useQueryClient()
@@ -73,4 +73,4 @@ const UserActionsCell: FC<Props> = ({id}) => {
   )
 }
 
-export {UserActionsCell}
+export {RoleActionCell}

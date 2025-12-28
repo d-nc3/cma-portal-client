@@ -6,7 +6,7 @@ export const REGISTER_URL = `${API_URL}/api/roles/createRole`
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
 export const GET_ROLES_URL = `${API_URL}/api/roles/getAllRoles`
 export const EDIT_USERS_URL = `${API_URL}/api/users/updateUser`
-export const GET_USER_BY_ID = `${API_URL}/api/users/getUserById`
+export const GET_ROLE_BY_ID = `${API_URL}/api/roles/roleById`
 export const DELETE_ROLE_URL = `${API_URL}/api/roles/deleteRole`
 
 axios.defaults.withCredentials = true
@@ -39,8 +39,8 @@ export async function getRoles(query?: string) {
   }
 }
 
-export function getUserById(userId) {
-  return axios.get<RoleModel>(`${GET_USER_BY_ID}/${userId}`).then((res) => res.data)
+export function getRoleById(roleId) {
+  return axios.get<RoleModel>(`${GET_ROLE_BY_ID}/${roleId}`).then((res) => res.data)
 }
 
 export async function deleteRole(roleId) {
