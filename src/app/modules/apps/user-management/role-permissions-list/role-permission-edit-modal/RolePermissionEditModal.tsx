@@ -14,7 +14,7 @@ const RolePermissionEditModal = () => {
     <>
       <div
         className='modal fade show d-block'
-        id='kt_modal_add_role'
+        id='kt_modal_add_role_permission'
         role='dialog'
         tabIndex={-1}
         aria-modal='true'

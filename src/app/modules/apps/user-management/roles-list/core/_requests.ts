@@ -26,7 +26,7 @@ export function updateRole(values: any) {
   })
 }
 
-export async function getRoles(query?: string) {
+export async function getRoles() {
   try {
     const response = await axios.get(GET_ROLES_URL, {
       withCredentials: true,

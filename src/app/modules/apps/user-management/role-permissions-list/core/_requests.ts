@@ -12,10 +12,14 @@ axios.defaults.withCredentials = true
 
 // Server should return AuthModel
 export function register(values: any) {
-  return axios.post(CREATE_PERMISSIONS_URL, {
-    name: values.name,
-    description: values.description,
-  })
+  const requests = values.permission_id.map((pid: string) =>
+    axios.post(CREATE_PERMISSIONS_URL, {
+      roleId: values.role_id,
+      permissionId: pid, // single permission
+    })
+  );
+
+  return Promise.all(requests); // wait for all requests
 }
 
 export function updatePermission(values: any) {

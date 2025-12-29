@@ -25,7 +25,7 @@ export function updatePermission(values: any) {
   })
 }
 
-export async function getPermissions(query?: string) {
+export async function getPermissions() {
   try {
     const response = await axios.get(GET_PERMISSIONS_URL, {
       withCredentials: true, 

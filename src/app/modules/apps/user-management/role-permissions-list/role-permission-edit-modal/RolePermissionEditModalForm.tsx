@@ -3,40 +3,48 @@ import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
 import {RolePermissionModel} from '../core/_models'
+import Select from 'react-select'
 import clsx from 'clsx'
-import {useListView} from  '../core/ListViewProvider'
+import {useListView} from '../core/ListViewProvider'
 import {RolePermissionListLoading} from '../components/loading/RolePermissionListLoading'
 import {updatePermission, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
+import {RoleModel} from '../../roles-list/core/_models'
+import {PermissionModel} from '../../permissions-list/core/_models'
 
 type Props = {
   isRolePermissionLoading: boolean
   role_permission: RolePermissionModel
+  roles: RoleModel[]
+  isRoleLoading: boolean
+  permissions: PermissionModel[]
+  isPermissionLoading: boolean
 }
 
-const editPermissionSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Name is required'),
-  description: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .required('Description is required'),
+const rolePermissionSchema = Yup.object().shape({
+  role_id: Yup.string()
+    .required('Role is required'), // Must select a role
+
+  permission_id: Yup.array()
+    .of(Yup.string()) // Each selected permission must be a string (ID)
+    .min(1, 'At least one permission must be selected') // Require at least one permission
+    .required('Permissions are required'),
 })
 
-const RolePermissionEditModalForm: FC<Props> = ({role_permission, isRolePermissionLoading}) => {
+const RolePermissionEditModalForm: FC<Props> = ({
+  role_permission,
+  isRolePermissionLoading,
+  roles = [],
+  permissions = [],
+}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
 
-
-
-
-  const [permissionForEdit,setRoleForEdit] = useState<RolePermissionModel>({
+  const [permissionForEdit, setRoleForEdit] = useState<RolePermissionModel>({
     ...role_permission,
     role_id: role_permission.role_id,
     permission_id: role_permission.permission_id,
   })
-    
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
@@ -48,8 +56,8 @@ const RolePermissionEditModalForm: FC<Props> = ({role_permission, isRolePermissi
   const blankImg = toAbsoluteUrl('/media/svg/avatars/blank.svg')
   const formik = useFormik({
     initialValues: permissionForEdit,
-    validationSchema: editPermissionSchema,
-    enableReinitialize: true, // only if you want to update form with new data
+    validationSchema: rolePermissionSchema,
+    enableReinitialize: true, // << add this!
     onSubmit: async (values, {setSubmitting}) => {
       setSubmitting(true)
       try {
@@ -81,52 +89,68 @@ const RolePermissionEditModalForm: FC<Props> = ({role_permission, isRolePermissi
           data-kt-scroll-wrappers='#kt_modal_add_user_scroll'
           data-kt-scroll-offset='300px'
         >
-          {/* begin::Input group - name Name */}
+          {/* begin::Input group - Role */}
           <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>Role Name</label>
-            <input
-              placeholder='Role Name'
-              {...formik.getFieldProps('name')} // use name
+            <label className='required fw-bold fs-6 mb-2'>Role</label>
+
+            <select
+              {...formik.getFieldProps('role_id')}
               className={clsx(
-                'form-control form-control-solid mb-3 mb-lg-0',
+                'form-select form-select-solid mb-3 mb-lg-0',
                 {'is-invalid': formik.touched.role_id && formik.errors.role_id},
                 {'is-valid': formik.touched.role_id && !formik.errors.role_id}
               )}
-              type='text'
-              name='name'
-              autoComplete='off'
               disabled={formik.isSubmitting || isRolePermissionLoading}
-            />
+            >
+              <option value=''>Select a role</option>
+
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+
             {formik.touched.role_id && formik.errors.role_id && (
-              <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.role_id}</span>
-              </div>
+               <div className='invalid-feedback d-block'>{formik.errors.role_id}</div>
             )}
           </div>
           {/* end::Input group */}
-
-          {/* begin::Input group - Description */}
           <div className='fv-row mb-7'>
-            <label className='fw-bold fs-6 mb-2'>Description</label>
-            <textarea
-              placeholder='name Description'
-              {...formik.getFieldProps('description')} // use description
+            <label className='required fw-bold fs-6 mb-2'>Permissions</label>
+            <Select
+              isMulti
+              name='permissions'  
+              options={permissions.map((permission) => ({
+                value: permission.id!,
+                label: permission.name,
+              }))}
               className={clsx(
-                'form-control form-control-solid mb-3 mb-lg-0',
+                'basic-multi-select',
                 {'is-invalid': formik.touched.permission_id && formik.errors.permission_id},
                 {'is-valid': formik.touched.permission_id && !formik.errors.permission_id}
               )}
-              name='description'
-              rows={3}
-              disabled={formik.isSubmitting || isRolePermissionLoading}
+              classNamePrefix='select'
+              onChange={(selectedOptions) => {
+                const selectedValues = selectedOptions
+                  ? selectedOptions.map((option) => option.value)
+                  : []
+                formik.setFieldValue('permission_id', selectedValues)
+              }}
+              value={permissions
+                .filter((permission) =>
+                  formik.values.permission_id?.includes(permission.id!)
+                )
+                .map((permission) => ({
+                  value: permission.id!,  
+                  label: permission.name,
+                }))}
+              isDisabled={formik.isSubmitting || isRolePermissionLoading}
             />
             {formik.touched.permission_id && formik.errors.permission_id && (
-              <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.permission_id}</span>
-              </div>
+              <div className='invalid-feedback d-block'>{formik.errors.permission_id}</div>
             )}
           </div>
-          {/* end::Input group */}
 
           {/* end::Scroll */}
 
@@ -146,7 +170,9 @@ const RolePermissionEditModalForm: FC<Props> = ({role_permission, isRolePermissi
               type='submit'
               className='btn btn-primary'
               data-kt-users-modal-action='submit'
-              disabled={isRolePermissionLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
+              disabled={
+                isRolePermissionLoading || formik.isSubmitting || !formik.isValid || !formik.touched
+              }
             >
               <span className='indicator-label'>Submit</span>
               {(formik.isSubmitting || isRolePermissionLoading) && (

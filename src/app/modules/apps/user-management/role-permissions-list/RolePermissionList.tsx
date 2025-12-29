@@ -1,9 +1,9 @@
-import {ListViewProvider, useListView} from '../permissions-list/core/ListViewProvider'
-import {QueryRequestProvider} from  '../permissions-list/core/QueryRequestProvider'
+import {ListViewProvider, useListView} from '../role-permissions-list/core/ListViewProvider'
+import {QueryRequestProvider} from  '../role-permissions-list/core/QueryRequestProvider'
 import { QueryResponseProvider } from '../role-permissions-list/core/QueryResponseProvider'
 import { RolePermissionListHeader } from './components/header/RolePermissionListHeader'
 import { RolePermissionsTable } from  './table/RolePermissionsTable'
-import { RolePermissionEditModal } from './permission-edit-modal/RolePermissionEditModal'
+import { RolePermissionEditModal } from './role-permission-edit-modal/RolePermissionEditModal'
 import {KTCard} from '../../../../../_metronic/helpers'
 
 const RolePermissionList = () => {
