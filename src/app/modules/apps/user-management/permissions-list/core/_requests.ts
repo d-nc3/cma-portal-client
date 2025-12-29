@@ -1,35 +1,34 @@
 import axios from 'axios'
-import {RoleModel} from './_models'
 const API_URL = process.env.REACT_APP_API_URL
 
-export const REGISTER_URL = `${API_URL}/api/roles/createRole`
-export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
-export const GET_ROLES_URL = `${API_URL}/api/roles/getAllRoles`
-export const EDIT_ROLE_URL = `${API_URL}/api/roles/updateRole`
-export const GET_ROLE_BY_ID = `${API_URL}/api/roles/roleById`
-export const DELETE_ROLE_URL = `${API_URL}/api/roles/deleteRole`
+export const CREATE_PERMISSIONS_URL = `${API_URL}/api/permissions/createPermission`
+export const GET_PERMISSIONS_URL = `${API_URL}/api/permissions/getAllPermissions`
+export const DELETE_ROLE_URL = `${API_URL}/api/permissions/deletePermission`
+export const EDIT_ROLE_URL = `${API_URL}/api/permissions/editPermission`
+export const GET_PERMISSION_BY_ID_URL = `${API_URL}/api/permissions/permissionById`
+
 
 axios.defaults.withCredentials = true
 
 // Server should return AuthModel
 export function register(values: any) {
-  return axios.post(REGISTER_URL, {
+  return axios.post(CREATE_PERMISSIONS_URL, {
     name: values.name,
     description: values.description,
   })
 }
 
-export function updateRole(values: any) {
+export function updatePermission(values: any) {
   return axios.put(`${EDIT_ROLE_URL}/${values.id}`, {
     name: values.name,
     description: `${values.description}`,
   })
 }
 
-export async function getRoles(query?: string) {
+export async function getPermissions(query?: string) {
   try {
-    const response = await axios.get(GET_ROLES_URL, {
-      withCredentials: true,
+    const response = await axios.get(GET_PERMISSIONS_URL, {
+      withCredentials: true, 
     })
 
     return response.data
@@ -39,20 +38,22 @@ export async function getRoles(query?: string) {
   }
 }
 
-export const getRoleById = async (roleId) => {
+export const getPermissionById = async (roleId) => {
   try {
-    const response = await axios.get(`${GET_ROLE_BY_ID}/${roleId}`, {
+    const response = await axios.get(`${GET_PERMISSION_BY_ID_URL}/${roleId}`, {
       withCredentials: true, // optional, if your API requires cookies
     })
-    return response.data.data
+    return response.data
   } catch (error) {
     console.error('Error fetching role by ID:', error)
     throw error
   }
 }
-export async function deleteRole(roleId) {
+
+
+export async function deletePermissions(permissionId) {
   try {
-    const response = await axios.delete(`${DELETE_ROLE_URL}/${roleId}`, {
+    const response = await axios.delete(`${DELETE_ROLE_URL}/${permissionId}`, {
       withCredentials: true,
     });
 

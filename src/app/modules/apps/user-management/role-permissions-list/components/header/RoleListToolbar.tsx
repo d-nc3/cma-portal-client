@@ -1,5 +1,5 @@
 import {KTIcon} from '../../../../../../../_metronic/helpers'
-import {useListView} from '../../core/ListViewProvider'
+import {useListView} from  '../../core/ListViewProvider'
 import {UsersListFilter} from './RoleListFilter'
 
 const UsersListToolbar = () => {

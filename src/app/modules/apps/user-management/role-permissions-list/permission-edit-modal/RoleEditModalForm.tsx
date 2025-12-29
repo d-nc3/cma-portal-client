@@ -2,19 +2,19 @@ import {FC, useState} from 'react'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
-import {RoleModel} from '../core/_models'
+import {PermissionModel} from '../core/_models'
 import clsx from 'clsx'
-import {useListView} from '../core/ListViewProvider'
+import {useListView} from  '../core/ListViewProvider'
 import {UsersListLoading} from '../components/loading/RoleListLoading'
-import {updateRole, register} from '../core/_requests'
+import {updatePermission, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 
 type Props = {
-  isRoleLoading: boolean
-  role: RoleModel
+  isPermissionLoading: boolean
+  permission: PermissionModel
 }
 
-const editUserSchema = Yup.object().shape({
+const editPermissionSchema = Yup.object().shape({
   name: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -24,17 +24,17 @@ const editUserSchema = Yup.object().shape({
     .required('Description is required'),
 })
 
-const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
+const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
 
 
 
 
-  const [roleForEdit,setRoleForEdit] = useState<RoleModel>({
-    ...role,
-    name: role.name,
-    description: role.description,
+  const [permissionForEdit,setRoleForEdit] = useState<PermissionModel>({
+    ...permission,
+    name: permission.name,
+    description: permission.description,
   })
     
 
@@ -47,14 +47,14 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
 
   const blankImg = toAbsoluteUrl('/media/svg/avatars/blank.svg')
   const formik = useFormik({
-    initialValues: roleForEdit,
-    validationSchema: editUserSchema,
+    initialValues: permissionForEdit,
+    validationSchema: editPermissionSchema,
     enableReinitialize: true, // only if you want to update form with new data
     onSubmit: async (values, {setSubmitting}) => {
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
-          await updateRole(values)
+          await updatePermission(values)
         } else {
           await register(values)
         }
@@ -83,7 +83,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
         >
           {/* begin::Input group - name Name */}
           <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>Role Name</label>
+            <label className='required fw-bold fs-6 mb-2'>Permission Name</label>
             <input
               placeholder='Role Name'
               {...formik.getFieldProps('name')} // use name
@@ -95,7 +95,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
               type='text'
               name='name'
               autoComplete='off'
-              disabled={formik.isSubmitting || isRoleLoading}
+              disabled={formik.isSubmitting || isPermissionLoading}
             />
             {formik.touched.name && formik.errors.name && (
               <div className='fv-plugins-message-container'>
@@ -118,7 +118,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
               )}
               name='description'
               rows={3}
-              disabled={formik.isSubmitting || isRoleLoading}
+              disabled={formik.isSubmitting || isPermissionLoading}
             />
             {formik.touched.description && formik.errors.description && (
               <div className='fv-plugins-message-container'>
@@ -137,7 +137,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
               onClick={() => cancel()}
               className='btn btn-light me-3'
               data-kt-users-modal-action='cancel'
-              disabled={formik.isSubmitting || isRoleLoading}
+              disabled={formik.isSubmitting || isPermissionLoading}
             >
               Discard
             </button>
@@ -146,10 +146,10 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
               type='submit'
               className='btn btn-primary'
               data-kt-users-modal-action='submit'
-              disabled={isRoleLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
+              disabled={isPermissionLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
             >
               <span className='indicator-label'>Submit</span>
-              {(formik.isSubmitting || isRoleLoading) && (
+              {(formik.isSubmitting || isPermissionLoading) && (
                 <span className='indicator-progress'>
                   Please wait...{' '}
                   <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
@@ -160,7 +160,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
           {/* end::Actions */}
         </div>
       </form>
-      {(formik.isSubmitting || isRoleLoading) && <UsersListLoading />}
+      {(formik.isSubmitting || isPermissionLoading) && <UsersListLoading />}
     </>
   )
 }

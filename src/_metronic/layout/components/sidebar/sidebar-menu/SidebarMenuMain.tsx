@@ -107,6 +107,7 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/apps/user-management/users' title='Users' hasBullet={true} />
         <SidebarMenuItem to='/apps/user-management/roles' title='Roles' hasBullet={true} />
         <SidebarMenuItem to='/apps/user-management/permissions' title='Permissions' hasBullet={true} />
+            <SidebarMenuItem to='/apps/user-management/permissions' title='Role Permissions' hasBullet={true} />
       </SidebarMenuItemWithSub>
       <div className='menu-item'>
         <a

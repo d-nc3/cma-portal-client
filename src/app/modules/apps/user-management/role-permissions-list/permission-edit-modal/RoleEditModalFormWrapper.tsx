@@ -1,10 +1,10 @@
 import {useQuery} from 'react-query'
 import {useEffect, useState} from 'react'
-import {RoleModel} from '../core/_models'
+import {PermissionModel} from '../core/_models'
 import {RoleEditModalForm} from './RoleEditModalForm'
 import {isNotEmpty, QUERIES} from '../../../../../../_metronic/helpers'
 import {useListView} from '../core/ListViewProvider'
-import {getRoleById} from '../core/_requests'
+import {getPermissionById} from '../core/_requests'
 
 const RoleEditModalFormWrapper = () => {
   const {itemIdForUpdate, setItemIdForUpdate} = useListView()
@@ -13,12 +13,12 @@ const RoleEditModalFormWrapper = () => {
   
   const {
     isLoading,
-    data: role,
+    data: permission,
     error,
   } = useQuery(
-    `${QUERIES.ROLES_LIST}-role-${itemIdForUpdate}`,
+    `${QUERIES.PERMISSIONS_LIST}-permission-${itemIdForUpdate}`,
     () => {
-      return getRoleById(itemIdForUpdate)
+      return getPermissionById(itemIdForUpdate)
     },
     {
       cacheTime: 0,
@@ -32,11 +32,11 @@ const RoleEditModalFormWrapper = () => {
   
 
   if (!itemIdForUpdate) {
-    return <RoleEditModalForm isRoleLoading={isLoading} role={{id: undefined}} />
+    return <RoleEditModalForm isPermissionLoading={isLoading} permission={{id: undefined}} />
   }
 
-  if (!isLoading && !error && role) {
-    return <RoleEditModalForm isRoleLoading={isLoading} role={role} />
+  if (!isLoading && !error && permission) {
+    return <RoleEditModalForm isPermissionLoading={isLoading} permission={permission?.data} />
   }
 
   return null

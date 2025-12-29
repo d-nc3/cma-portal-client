@@ -6,12 +6,15 @@ import {UserModel} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from '../core/ListViewProvider'
 import {UsersListLoading} from '../components/loading/UsersListLoading'
-import {updateUser, register} from '../core/_requests'
+import {updateUser, register, addRole} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
+import {RoleModel} from '../../roles-list/core/_models'
 
 type Props = {
   isUserLoading: boolean
   user: UserModel
+  roles: RoleModel[]
+  isRoleLoading: boolean
 }
 
 const editUserSchema = Yup.object().shape({
@@ -21,32 +24,21 @@ const editUserSchema = Yup.object().shape({
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
 
-  first_name: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .required('First name is required'),
+  first_name: Yup.string().min(3, 'Minimum 3 symbols').required('First name is required'),
 
-  last_name: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .required('Last name is required'),
+  last_name: Yup.string().min(3, 'Minimum 3 symbols').required('Last name is required'),
 
-  password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .required('Password is required'),
+  password: Yup.string().min(3, 'Minimum 3 symbols').required('Password is required'),
 
   role: Yup.string() // if role is a string (role name or id)
     .required('Role is required'),
 })
 
-
-const UserEditModalForm: FC<Props> = ({user, isUserLoading}) => {
+const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
 
-  const [userForEdit] = useState<UserModel>({
-    ...user,
-    fullname: user.fullname,
-    email: user.email,
-  })
+
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
@@ -56,25 +48,35 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading}) => {
   }
 
   const blankImg = toAbsoluteUrl('/media/svg/avatars/blank.svg')
-  const formik = useFormik({
-    initialValues: userForEdit,
-    validationSchema: editUserSchema,
-    onSubmit: async (values, {setSubmitting}) => {
-      setSubmitting(true)
-      try {
-        if (isNotEmpty(values.id)) {
-          await updateUser(values)
-        } else {
-          await register(values)
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setSubmitting(false)
-        cancel(true)
+ const formik = useFormik({
+  initialValues: {
+    id: user.id ?? '',
+    email: user.email ?? '',
+    first_name: user.first_name ?? '',
+    last_name: user.last_name ?? '',
+    password: user.password ?? '',
+    role: user.role ?? '',
+  },
+  enableReinitialize: true, // ⭐ IMPORTANT
+  validationSchema: editUserSchema,
+  onSubmit: async (values, {setSubmitting}) => {
+    setSubmitting(true)
+    try {
+      if (isNotEmpty(values.id)) {
+        await updateUser(values)
+        addRole(values)
+      } else {
+        await register(values)
       }
-    },
-  })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setSubmitting(false)
+      cancel(true)
+    }
+  },
+})
+
 
   return (
     <>
@@ -200,10 +202,12 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading}) => {
               disabled={formik.isSubmitting || isUserLoading}
             >
               <option value=''>Select a role</option>
-              <option value='admin'>Admin</option>
-              <option value='manager'>Manager</option>
-              <option value='user'>User</option>
-              {/* Add more roles if needed */}
+
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
             </select>
 
             {formik.touched.role && formik.errors.role && (

@@ -1,5 +1,5 @@
 import {KTIcon} from '../../../../../../../_metronic/helpers'
-import {useListView} from '../../core/ListViewProvider'
+import {useListView} from  '../../core/ListViewProvider'
 import {UsersListFilter} from './RoleListFilter'
 
 const UsersListToolbar = () => {
@@ -22,7 +22,7 @@ const UsersListToolbar = () => {
       {/* begin::Add user */}
       <button type='button' className='btn btn-primary' onClick={openAddUserModal}>
         <KTIcon iconName='plus' className='fs-2' />
-        Add Role
+        Add Permissions
       </button>
       {/* end::Add user */}
     </div>

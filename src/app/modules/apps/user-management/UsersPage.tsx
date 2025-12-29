@@ -63,7 +63,7 @@ const UsersPage = () => {
       />
 
       {/* Catch-all for unknown paths */}
-      <Route path="*" element={<Navigate to="users" />} />
+      <Route path="permissions" element={<Navigate to="permissions" />} />
     </Routes>
   )
 }
