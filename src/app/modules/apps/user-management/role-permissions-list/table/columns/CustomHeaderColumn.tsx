@@ -1,10 +1,10 @@
 // @ts-nocheck
 import {FC} from 'react'
 import {ColumnInstance} from 'react-table'
-import {PermissionModel} from '../../core/_models'
+import {RolePermissionModel} from '../../core/_models'
 
 type Props = {
-  column: ColumnInstance<RoleModel>
+  column: ColumnInstance<RolePermissionModel>
 }
 
 const CustomHeaderColumn: FC<Props> = ({column}) => (

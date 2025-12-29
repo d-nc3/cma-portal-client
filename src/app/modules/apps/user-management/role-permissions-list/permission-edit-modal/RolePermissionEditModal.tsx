@@ -1,8 +1,8 @@
 import {useEffect} from 'react'
-import {RoleEditModalHeader} from './RoleEditModalHeader'
-import {RoleEditModalFormWrapper} from './RoleEditModalFormWrapper'
+import {RolePermissionEditModalHeader} from './RolePermissionEditModalHeader'
+import {RolePermissionEditModalFormWrapper} from './RolePermissionEditModalFormWrapper'
 
-const RoleEditModal = () => {
+const RolePermissionEditModal = () => {
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => {
@@ -23,10 +23,10 @@ const RoleEditModal = () => {
         <div className='modal-dialog modal-dialog-centered mw-650px'>
           {/* begin::Modal content */}
           <div className='modal-content'>
-            <RoleEditModalHeader />
+            <RolePermissionEditModalHeader />
             {/* begin::Modal body */}
             <div className='modal-body scroll-y mx-5 mx-xl-15 my-7'>
-              <RoleEditModalFormWrapper />
+              <RolePermissionEditModalFormWrapper />
             </div>
             {/* end::Modal body */}
           </div>
@@ -41,4 +41,4 @@ const RoleEditModal = () => {
   )
 }
 
-export {RoleEditModal}
+export {RolePermissionEditModal}

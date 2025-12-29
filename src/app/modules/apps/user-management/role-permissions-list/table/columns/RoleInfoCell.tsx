@@ -2,10 +2,10 @@
 import clsx from 'clsx'
 import {FC} from 'react'
 import {toAbsoluteUrl} from '../../../../../../../_metronic/helpers'
-import {PermissionModel} from '../../core/_models'
+import {RolePermissionModel} from '../../core/_models'
 
 type Props = {
-  permission: PermissionModel
+  permission: RolePermissionModel
 }
 
 const UserInfoCell: FC<Props> = ({permission}) => (
@@ -13,9 +13,9 @@ const UserInfoCell: FC<Props> = ({permission}) => (
     {/* begin:: Avatar */}
     <div className='d-flex flex-column'>
       <a href='#' className='text-gray-800 text-hover-primary mb-1'>
-        {permission.name}
+        {permission.role_id}
       </a>
-      <span>{permission.description}</span>
+      <span>{permission.permission_id}</span>
     </div>
   </div>
 )

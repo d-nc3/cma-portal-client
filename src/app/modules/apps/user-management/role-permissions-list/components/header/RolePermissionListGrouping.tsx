@@ -4,7 +4,7 @@ import {useListView} from  '../../core/ListViewProvider'
 import {useQueryResponse} from '../../core/QueryResponseProvider'
 
 
-const UsersListGrouping = () => {
+const RolePermissionListGrouping = () => {
   const {selected, clearSelected} = useListView()
   const queryClient = useQueryClient()
   const {query} = useQueryResponse()
@@ -22,4 +22,4 @@ const UsersListGrouping = () => {
   )
 }
 
-export {UsersListGrouping}
+export {RolePermissionListGrouping}

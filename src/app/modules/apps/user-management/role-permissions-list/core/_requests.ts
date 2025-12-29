@@ -1,11 +1,11 @@
 import axios from 'axios'
 const API_URL = process.env.REACT_APP_API_URL
 
-export const CREATE_PERMISSIONS_URL = `${API_URL}/api/permissions/createPermission`
-export const GET_PERMISSIONS_URL = `${API_URL}/api/permissions/getAllPermissions`
-export const DELETE_ROLE_URL = `${API_URL}/api/permissions/deletePermission`
-export const EDIT_ROLE_URL = `${API_URL}/api/permissions/editPermission`
-export const GET_PERMISSION_BY_ID_URL = `${API_URL}/api/permissions/permissionById`
+export const CREATE_PERMISSIONS_URL = `${API_URL}/api/role-permissions/create`
+export const GET_ROLE_PERMISSIONS_URL = `${API_URL}/api/role-permissions/getAll`
+export const DELETE_URL = `${API_URL}/api/role-permissions/deleteRolePermission`
+export const EDIT_ROLE_URL = `${API_URL}/api/role-permissions/updateRolePermission`
+export const GET_BY_ID = `${API_URL}/api/role-permissions/getById`
 
 
 axios.defaults.withCredentials = true
@@ -25,9 +25,9 @@ export function updatePermission(values: any) {
   })
 }
 
-export async function getPermissions(query?: string) {
+export async function getRolePermissions(query?: string) {
   try {
-    const response = await axios.get(GET_PERMISSIONS_URL, {
+    const response = await axios.get(GET_ROLE_PERMISSIONS_URL, {
       withCredentials: true, 
     })
 
@@ -38,9 +38,9 @@ export async function getPermissions(query?: string) {
   }
 }
 
-export const getPermissionById = async (roleId) => {
+export const getRolePermissionId = async (roleId) => {
   try {
-    const response = await axios.get(`${GET_PERMISSION_BY_ID_URL}/${roleId}`, {
+    const response = await axios.get(`${GET_BY_ID}/${roleId}`, {
       withCredentials: true, // optional, if your API requires cookies
     })
     return response.data
@@ -51,9 +51,9 @@ export const getPermissionById = async (roleId) => {
 }
 
 
-export async function deletePermissions(permissionId) {
+export async function deleteRolePermission(RolepermissionId) {
   try {
-    const response = await axios.delete(`${DELETE_ROLE_URL}/${permissionId}`, {
+    const response = await axios.delete(`${DELETE_URL}/${RolepermissionId}`, {
       withCredentials: true,
     });
 

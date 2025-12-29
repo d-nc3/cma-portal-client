@@ -17,7 +17,7 @@ const mappedLabel = (label: string): string => {
   return label
 }
 
-const UsersListPagination = () => {
+const RolePermissionListPagination = () => {
   const pagination = useQueryResponsePagination()
   const isLoading = useQueryResponseLoading()
   const {updateState} = useQueryRequest()
@@ -153,4 +153,4 @@ const UsersListPagination = () => {
   )
 }
 
-export {UsersListPagination}
+export {RolePermissionListPagination}

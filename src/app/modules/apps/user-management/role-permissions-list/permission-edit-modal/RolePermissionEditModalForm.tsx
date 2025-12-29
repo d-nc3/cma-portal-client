@@ -2,16 +2,16 @@ import {FC, useState} from 'react'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
-import {PermissionModel} from '../core/_models'
+import {RolePermissionModel} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from  '../core/ListViewProvider'
-import {UsersListLoading} from '../components/loading/RoleListLoading'
+import {RolePermissionListLoading} from '../components/loading/RolePermissionListLoading'
 import {updatePermission, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 
 type Props = {
-  isPermissionLoading: boolean
-  permission: PermissionModel
+  isRolePermissionLoading: boolean
+  role_permission: RolePermissionModel
 }
 
 const editPermissionSchema = Yup.object().shape({
@@ -24,17 +24,17 @@ const editPermissionSchema = Yup.object().shape({
     .required('Description is required'),
 })
 
-const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
+const RolePermissionEditModalForm: FC<Props> = ({role_permission, isRolePermissionLoading}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
 
 
 
 
-  const [permissionForEdit,setRoleForEdit] = useState<PermissionModel>({
-    ...permission,
-    name: permission.name,
-    description: permission.description,
+  const [permissionForEdit,setRoleForEdit] = useState<RolePermissionModel>({
+    ...role_permission,
+    role_id: role_permission.role_id,
+    permission_id: role_permission.permission_id,
   })
     
 
@@ -83,23 +83,23 @@ const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
         >
           {/* begin::Input group - name Name */}
           <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>Permission Name</label>
+            <label className='required fw-bold fs-6 mb-2'>Role Name</label>
             <input
               placeholder='Role Name'
               {...formik.getFieldProps('name')} // use name
               className={clsx(
                 'form-control form-control-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.name && formik.errors.name},
-                {'is-valid': formik.touched.name && !formik.errors.name}
+                {'is-invalid': formik.touched.role_id && formik.errors.role_id},
+                {'is-valid': formik.touched.role_id && !formik.errors.role_id}
               )}
               type='text'
               name='name'
               autoComplete='off'
-              disabled={formik.isSubmitting || isPermissionLoading}
+              disabled={formik.isSubmitting || isRolePermissionLoading}
             />
-            {formik.touched.name && formik.errors.name && (
+            {formik.touched.role_id && formik.errors.role_id && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.name}</span>
+                <span role='alert'>{formik.errors.role_id}</span>
               </div>
             )}
           </div>
@@ -113,16 +113,16 @@ const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
               {...formik.getFieldProps('description')} // use description
               className={clsx(
                 'form-control form-control-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.description && formik.errors.description},
-                {'is-valid': formik.touched.description && !formik.errors.description}
+                {'is-invalid': formik.touched.permission_id && formik.errors.permission_id},
+                {'is-valid': formik.touched.permission_id && !formik.errors.permission_id}
               )}
               name='description'
               rows={3}
-              disabled={formik.isSubmitting || isPermissionLoading}
+              disabled={formik.isSubmitting || isRolePermissionLoading}
             />
-            {formik.touched.description && formik.errors.description && (
+            {formik.touched.permission_id && formik.errors.permission_id && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.description}</span>
+                <span role='alert'>{formik.errors.permission_id}</span>
               </div>
             )}
           </div>
@@ -137,7 +137,7 @@ const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
               onClick={() => cancel()}
               className='btn btn-light me-3'
               data-kt-users-modal-action='cancel'
-              disabled={formik.isSubmitting || isPermissionLoading}
+              disabled={formik.isSubmitting || isRolePermissionLoading}
             >
               Discard
             </button>
@@ -146,10 +146,10 @@ const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
               type='submit'
               className='btn btn-primary'
               data-kt-users-modal-action='submit'
-              disabled={isPermissionLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
+              disabled={isRolePermissionLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
             >
               <span className='indicator-label'>Submit</span>
-              {(formik.isSubmitting || isPermissionLoading) && (
+              {(formik.isSubmitting || isRolePermissionLoading) && (
                 <span className='indicator-progress'>
                   Please wait...{' '}
                   <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
@@ -160,9 +160,9 @@ const RoleEditModalForm: FC<Props> = ({permission, isPermissionLoading}) => {
           {/* end::Actions */}
         </div>
       </form>
-      {(formik.isSubmitting || isPermissionLoading) && <UsersListLoading />}
+      {(formik.isSubmitting || isRolePermissionLoading) && <RolePermissionListLoading />}
     </>
   )
 }
 
-export {RoleEditModalForm}
+export {RolePermissionEditModalForm}

@@ -1,16 +1,16 @@
 import {KTIcon} from '../../../../../../../_metronic/helpers'
 import {useListView} from  '../../core/ListViewProvider'
-import {UsersListFilter} from './RoleListFilter'
+import {RolePermissionListFilter} from './RolePermissionListFilter'
 
-const UsersListToolbar = () => {
+const RolePermissionListToolbar = () => {
   const {setItemIdForUpdate} = useListView()
-  const openAddUserModal = () => {
+  const openAddRolePermissionModal = () => {
     setItemIdForUpdate(null)
   }
 
   return (
     <div className='d-flex justify-content-end' data-kt-user-table-toolbar='base'>
-      <UsersListFilter />
+      <RolePermissionListFilter />
 
       {/* begin::Export */}
       <button type='button' className='btn btn-light-primary me-3'>
@@ -20,13 +20,13 @@ const UsersListToolbar = () => {
       {/* end::Export */}
 
       {/* begin::Add user */}
-      <button type='button' className='btn btn-primary' onClick={openAddUserModal}>
+      <button type='button' className='btn btn-primary' onClick={openAddRolePermissionModal}>
         <KTIcon iconName='plus' className='fs-2' />
-        Add Role
+        Add Role Permission
       </button>
       {/* end::Add user */}
     </div>
   )
 }
 
-export {UsersListToolbar}
+export {RolePermissionListToolbar}

@@ -10,11 +10,11 @@ import {
   stringifyRequestQuery,
   WithChildren,
 } from '../../../../../../_metronic/helpers'
-import {getPermissions} from './_requests'
-import {PermissionModel} from './_models'
+import {getRolePermissions, getRolePermissionId} from './_requests'
+import {RolePermissionModel} from './_models'
 import {useQueryRequest} from './QueryRequestProvider'
 
-const QueryResponseContext = createResponseContext<PermissionModel>(initialQueryResponse)
+const QueryResponseContext = createResponseContext<RolePermissionModel>(initialQueryResponse)
 const QueryResponseProvider: FC<WithChildren> = ({children}) => {
   const {state} = useQueryRequest()
   const [query, setQuery] = useState<string>(stringifyRequestQuery(state))
@@ -31,9 +31,9 @@ const QueryResponseProvider: FC<WithChildren> = ({children}) => {
       refetch,
       data: response,
     } = useQuery(
-      `${QUERIES.PERMISSIONS_LIST}-${query}`,
+      `${QUERIES.ROLE_PERMISSIONS_LIST}-${query}`,
       () => {
-        return getPermissions()
+        return getRolePermissions()
       },
       {cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false}
     )

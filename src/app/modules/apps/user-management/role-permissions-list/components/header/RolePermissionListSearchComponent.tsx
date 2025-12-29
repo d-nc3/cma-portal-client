@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {initialQueryState, KTIcon, useDebounce} from '../../../../../../../_metronic/helpers'
 import {useQueryRequest} from '../../core/QueryRequestProvider'
 
-const UsersListSearchComponent = () => {
+const RolePermissionListSearchComponent = () => {
   const {updateState} = useQueryRequest()
   const [searchTerm, setSearchTerm] = useState<string>('')
   // Debounce search term so that it only gives us latest value ...
@@ -41,4 +41,4 @@ const UsersListSearchComponent = () => {
   )
 }
 
-export {UsersListSearchComponent}
+export {RolePermissionListSearchComponent}

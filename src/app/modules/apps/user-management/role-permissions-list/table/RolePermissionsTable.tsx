@@ -1,15 +1,15 @@
 import {useMemo} from 'react'
 import {useTable, ColumnInstance, Row} from 'react-table'
-import {CustomHeaderColumn} from '../table/columns/CustomHeaderColumn'
-import {CustomRow} from '../table/columns/CustomRow'
+import {CustomHeaderColumn} from './columns/CustomHeaderColumn'
+import {CustomRow} from './columns/CustomRow'
 import {useQueryResponseData, useQueryResponseLoading} from '../core/QueryResponseProvider'
 import {usersColumns} from './columns/_columns'
-import {PermissionModel} from '../core/_models'
-import {UsersListLoading} from '../components/loading/RoleListLoading'
-import {UsersListPagination} from '../components/pagination/RoleListPagination'
+import {RolePermissionModel} from '../core/_models'
+import {RolePermissionListLoading} from '../components/loading/RolePermissionListLoading'
+import {RolePermissionListPagination} from '../components/pagination/RolePermissionListPagination'
 import {KTCardBody} from '../../../../../../_metronic/helpers'
 
-const UsersTable = () => {
+const RolePermissionsTable = () => {
   const users = useQueryResponseData()
   const isLoading = useQueryResponseLoading()
   const data = useMemo(() => users, [users])
@@ -29,14 +29,14 @@ const UsersTable = () => {
         >
           <thead>
             <tr className='text-start text-muted fw-bolder fs-7 text-uppercase gs-0'>
-              {headers.map((column: ColumnInstance<PermissionModel>) => (
+              {headers.map((column: ColumnInstance<RolePermissionModel>) => (
                 <CustomHeaderColumn key={column.id} column={column} />
               ))}
             </tr>
           </thead>
           <tbody className='text-gray-600 fw-bold' {...getTableBodyProps()}>
             {rows.length > 0 ? (
-              rows.map((row: Row<PermissionModel>, i) => {
+              rows.map((row: Row<RolePermissionModel>, i) => {
                 prepareRow(row)
                 return <CustomRow row={row} key={`row-${i}-${row.id}`} />
               })
@@ -52,10 +52,10 @@ const UsersTable = () => {
           </tbody>
         </table>
       </div>
-      <UsersListPagination />
-      {isLoading && <UsersListLoading />}
+      <RolePermissionListPagination />
+      {isLoading && <RolePermissionListLoading />}
     </KTCardBody>
   )
 }
 
-export {UsersTable}
+export {RolePermissionsTable}

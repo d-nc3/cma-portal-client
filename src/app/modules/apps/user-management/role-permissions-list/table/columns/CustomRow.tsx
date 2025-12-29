@@ -2,10 +2,10 @@
 import clsx from 'clsx'
 import {FC} from 'react'
 import {Row} from 'react-table'
-import {PermissionModel} from '../../core/_models'
+import {RolePermissionModel} from '../../core/_models'
 
 type Props = {
-  row: Row<RoleModel>
+  row: Row<RolePermissionModel>
 }
 
 const CustomRow: FC<Props> = ({row}) => (

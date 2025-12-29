@@ -5,7 +5,7 @@ import {MenuComponent} from '../../../../../../../_metronic/assets/ts/components
 import {ID, KTIcon, QUERIES} from '../../../../../../../_metronic/helpers'
 import {useListView} from  '../../core/ListViewProvider'
 import {useQueryResponse} from '../../core/QueryResponseProvider'
-import {deletePermissions} from '../../core/_requests'
+import {deleteRolePermission} from '../../core/_requests'
 
 type Props = {
   id: ID
@@ -24,7 +24,7 @@ const RoleActionCell: FC<Props> = ({id}) => {
     setItemIdForUpdate(id)
   }
 
-  const deleteItem = useMutation(() => deletePermissions(id), {
+  const deleteItem = useMutation(() => deleteRolePermission(id), {
     // 💡 response of the mutation is passed to onSuccess
     onSuccess: () => {
       // ✅ update detail view directly

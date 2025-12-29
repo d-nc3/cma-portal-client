@@ -1,8 +1,8 @@
 import {ID, Response} from '../../../../../../_metronic/helpers'
-export interface PermissionModel {
+export interface RolePermissionModel {
   id?: number
-  name?: string
-  description?: string | undefined
+  role_id?: string
+  permission_id?: string | undefined
 }
 
 
