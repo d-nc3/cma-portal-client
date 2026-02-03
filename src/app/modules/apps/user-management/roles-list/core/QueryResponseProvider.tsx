@@ -23,6 +23,7 @@ const QueryResponseProvider: FC<WithChildren> = ({children}) => {
   useEffect(() => {
     if (query !== updatedQuery) {
       setQuery(updatedQuery)
+
     }
   }, [updatedQuery])
 
@@ -31,9 +32,9 @@ const QueryResponseProvider: FC<WithChildren> = ({children}) => {
       refetch,
       data: response,
     } = useQuery(
-      `${QUERIES.USERS_LIST}-${query}`,
+      `${QUERIES.ROLES_LIST}-${query}`,
       () => {
-        return getRoles(query)
+        return getRoles()
       },
       {cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false}
     )

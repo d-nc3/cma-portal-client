@@ -3,6 +3,7 @@ import { PageLink, PageTitle } from '../../../../_metronic/layout/core'
 import { UsersListWrapper } from './users-list/UsersList'
 import { RoleListWrapper } from './roles-list/RoleList'
 import { PermissionListWrapper } from './permissions-list/PermissionList'
+import { RolePermissionWrapper } from   './role-permissions-list/RolePermissionList'
 
 const usersBreadcrumbs: Array<PageLink> = [
   { title: 'User Management', path: '/apps/user-management/users', isSeparator: false, isActive: false },
@@ -17,6 +18,12 @@ const rolesBreadcrumbs: Array<PageLink> = [
 
 const PermissionsBreadcrumbs: Array<PageLink> = [
   { title: 'Role Management', path: '/apps/user-management/permissions', isSeparator: false, isActive: false },
+  { title: '', path: '', isSeparator: true, isActive: false },
+]
+
+
+const RolePermissionsBreadcrumbs: Array<PageLink> = [
+  { title: 'Role Management', path: '/apps/user-management/role-permissions', isSeparator: false, isActive: false },
   { title: '', path: '', isSeparator: true, isActive: false },
 ]
 
@@ -63,8 +70,21 @@ const UsersPage = () => {
       />
 
       {/* Catch-all for unknown paths */}
-      <Route path="*" element={<Navigate to="users" />} />
+      <Route path="role-permissions" element={<Navigate to="role-permissions" />} />
+         <Route
+        path="RolePermissions"
+        element={
+          <>
+            <PageTitle breadcrumbs={RolePermissionsBreadcrumbs}>Role Permission list</PageTitle>
+            <RolePermissionWrapper/>
+          </>
+        }
+      />
+
     </Routes>
+   
+    
+    
   )
 }
 

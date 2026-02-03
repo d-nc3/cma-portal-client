@@ -1,12 +1,12 @@
-import {ListViewProvider, useListView} from '../users-list/core/ListViewProvider'
-import {QueryRequestProvider} from '../users-list/core/QueryRequestProvider'
-import {QueryResponseProvider} from '../users-list/core/QueryResponseProvider'
-import {UsersListHeader} from '../users-list/components/header/UsersListHeader'
-import {UsersTable} from '../users-list/table/UsersTable'
-import {UserEditModal} from '../users-list/user-edit-modal/UserEditModal'
+import {ListViewProvider, useListView} from '../permissions-list/core/ListViewProvider'
+import {QueryRequestProvider} from '../permissions-list/core/QueryRequestProvider'
+import {QueryResponseProvider} from '../permissions-list/core/QueryResponseProvider'
+import {UsersListHeader} from './components/header/RoleListHeader'
+import {UsersTable} from '../permissions-list/table/RoleTable'
+import {RoleEditModal} from './permission-edit-modal/RoleEditModal'
 import {KTCard} from '../../../../../_metronic/helpers'
 
-const PermissionList = () => {
+const PermissionsList = () => {
   const {itemIdForUpdate} = useListView()
   return (
     <>
@@ -14,7 +14,7 @@ const PermissionList = () => {
         <UsersListHeader />
         <UsersTable />
       </KTCard>
-      {itemIdForUpdate !== undefined && <UserEditModal />}
+      {itemIdForUpdate !== undefined && <RoleEditModal />}
     </>
   )
 }
@@ -23,7 +23,7 @@ const PermissionListWrapper = () => (
   <QueryRequestProvider>
     <QueryResponseProvider>
       <ListViewProvider>
-        <PermissionList />
+        <PermissionsList />
       </ListViewProvider>
     </QueryResponseProvider>
   </QueryRequestProvider>

@@ -3,38 +3,68 @@ import {UserEditModalForm} from './UserEditModalForm'
 import {isNotEmpty, QUERIES} from '../../../../../../_metronic/helpers'
 import {useListView} from '../core/ListViewProvider'
 import {getUserById} from '../core/_requests'
+import {getRoles} from '../../roles-list/core/_requests'
 
 const UserEditModalFormWrapper = () => {
   const {itemIdForUpdate, setItemIdForUpdate} = useListView()
-  const enabledQuery: boolean = isNotEmpty(itemIdForUpdate)
+
+  const enabledQuery = isNotEmpty(itemIdForUpdate)
+
+  // 🔹 User Query
   const {
-    isLoading,
+    isLoading: isUserLoading,
     data: user,
-    error,
+    error: userError,
   } = useQuery(
-    `${QUERIES.USERS_LIST}-user-${itemIdForUpdate}`,
-    () => {
-      return getUserById(itemIdForUpdate)
-    },
+    [QUERIES.USERS_LIST, itemIdForUpdate],
+    () => getUserById(itemIdForUpdate),
     {
-      cacheTime: 0,
       enabled: enabledQuery,
+      cacheTime: 0,
       onError: (err) => {
-        setItemIdForUpdate(undefined)
         console.error(err)
+        setItemIdForUpdate(undefined)
       },
     }
   )
 
+const {
+  isLoading: isRoleLoading,
+  data: roles,
+  error: roleError,
+} = useQuery(
+  QUERIES.ROLES_LIST,            
+  () => getRoles(),              
+  {
+    enabled: enabledQuery,
+    staleTime: 5 * 60 * 1000,     
+  }
+)
+
+
   if (!itemIdForUpdate) {
-    return <UserEditModalForm isUserLoading={isLoading} user={{id: undefined}} />
+    return (
+      <UserEditModalForm
+        isUserLoading={false}
+        user={{id: undefined}}
+        isRoleLoading={isRoleLoading}
+        roles={roles}
+      />
+    )
   }
 
-  if (!isLoading && !error && user) {
-    return <UserEditModalForm isUserLoading={isLoading} user={user} />
+  if (userError || roleError) {
+    return null
   }
 
-  return null
+  return (
+    <UserEditModalForm
+      isUserLoading={isUserLoading}
+      user={user?.data[0] || []}
+      isRoleLoading={isRoleLoading}
+      roles={roles?.data || []}
+    />
+  )
 }
 
 export {UserEditModalFormWrapper}

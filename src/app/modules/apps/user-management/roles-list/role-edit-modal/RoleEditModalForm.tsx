@@ -5,8 +5,8 @@ import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
 import {RoleModel} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from '../core/ListViewProvider'
-import {UsersListLoading} from '../components/loading/UsersListLoading'
-import {updateUser, register} from '../core/_requests'
+import {UsersListLoading} from '../components/loading/RoleListLoading'
+import {updateRole, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 
 type Props = {
@@ -28,11 +28,15 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
 
-  const [roleForEdit] = useState<RoleModel>({
+
+
+
+  const [roleForEdit,setRoleForEdit] = useState<RoleModel>({
     ...role,
     name: role.name,
     description: role.description,
   })
+    
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
@@ -50,7 +54,7 @@ const RoleEditModalForm: FC<Props> = ({role, isRoleLoading}) => {
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
-          await updateUser(values)
+          await updateRole(values)
         } else {
           await register(values)
         }
