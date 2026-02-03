@@ -3,7 +3,7 @@ import {UserModel} from './_models'
 import { getAuth } from '../../../../auth'
 const API_URL = process.env.REACT_APP_API_URL
 
-export const REGISTER_URL = `${API_URL}/api/users/register`
+export const REGISTER_URL = `${API_URL}/api/users/register-user`
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
 export const GET_USER_URL = `${API_URL}/api/users/AllUsers  `
 export const EDIT_USERS_URL = `${API_URL}/api/users/updateUser`
@@ -40,6 +40,7 @@ export function updateUser(values: any) {
     email: values.email,
     password: values.password,
     fullname: `${values.first_name} ${values.last_name}`,
+    role: values.roles
   })
 }
 

@@ -30,24 +30,32 @@ const PrivateRoutes = () => {
           <Route path='menu-test' element={<MenuTestPage />} />
           <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
           
-          {/* Include shared routes here so they use AdminLayout */}
           <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
           <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
         </Route>
       )}
-
-      {/* 2. DRIVER SEGMENT */}
-      {hasRole('driver') && (
-        <Route element={<MasterLayout />}>
+    {
+      hasRole('Driver2') && (
+        <Route element={<AdminLayout />}>
           <Route path='dashboard' element={<DashboardWrapper />} />
           <Route path='builder' element={<BuilderPageWrapper />} />
           <Route path='menu-test' element={<MenuTestPage />} />
+          <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
           
-          {/* Include shared routes here so they use MasterLayout */}
           <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
+          <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
         </Route>
-      )}
-
+      )
+    }
+      <Route element={<AdminLayout />}>
+          <Route path='dashboard' element={<DashboardWrapper />} />
+          <Route path='builder' element={<BuilderPageWrapper />} />
+          <Route path='menu-test' element={<MenuTestPage />} />
+          <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
+          
+          <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
+          <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
+        </Route>
       {/* 3. GLOBAL REDIRECTS & 404 */}
       <Route path='auth/*' element={<Navigate to='/dashboard' />} />
       <Route path='*' element={<Navigate to='/error/404' />} />

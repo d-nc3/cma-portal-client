@@ -36,7 +36,7 @@ const {
   QUERIES.ROLES_LIST,            
   () => getRoles(),              
   {
-    enabled: enabledQuery,
+    enabled: true,
     staleTime: 5 * 60 * 1000,     
   }
 )
@@ -48,7 +48,7 @@ const {
         isUserLoading={false}
         user={{id: undefined}}
         isRoleLoading={isRoleLoading}
-        roles={roles}
+        roles={Array.isArray(roles) ? roles : roles?.data || []}
       />
     )
   }
@@ -62,7 +62,7 @@ const {
       isUserLoading={isUserLoading}
       user={user?.data[0] || []}
       isRoleLoading={isRoleLoading}
-      roles={roles?.data || []}
+       roles={Array.isArray(roles) ? roles : roles?.data || []}
     />
   )
 }

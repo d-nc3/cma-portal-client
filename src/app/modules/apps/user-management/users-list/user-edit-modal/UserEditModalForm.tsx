@@ -25,20 +25,17 @@ const editUserSchema = Yup.object().shape({
     .required('Email is required'),
 
   first_name: Yup.string().min(3, 'Minimum 3 symbols').required('First name is required'),
-
   last_name: Yup.string().min(3, 'Minimum 3 symbols').required('Last name is required'),
-
   password: Yup.string().min(3, 'Minimum 3 symbols').required('Password is required'),
-
-  role: Yup.string() // if role is a string (role name or id)
+  roles: Yup.array()
+    .of(Yup.string())
+    .min(1, 'At least one role is required')
     .required('Role is required'),
 })
 
-const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
+const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading}) => {
   const {setItemIdForUpdate} = useListView()
   const {refetch} = useQueryResponse()
-
-
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
@@ -48,34 +45,34 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
   }
 
   const blankImg = toAbsoluteUrl('/media/svg/avatars/blank.svg')
- const formik = useFormik({
-  initialValues: {
-    id: user.id ?? '',
-    email: user.email ?? '',
-    first_name: user.first_name ?? '',
-    last_name: user.last_name ?? '',
-    password: user.password ?? '',
-    role: user.role ?? '',
-  },
-  enableReinitialize: true, // ⭐ IMPORTANT
-  validationSchema: editUserSchema,
-  onSubmit: async (values, {setSubmitting}) => {
-    setSubmitting(true)
-    try {
-      if (isNotEmpty(values.id)) {
-        await updateUser(values)
-        addRole(values)
-      } else {
-        await register(values)
+  const formik = useFormik({
+    initialValues: {
+      id: user.id ?? '',
+      email: user.email ?? '',
+      first_name: user.first_name ?? '',
+      last_name: user.last_name ?? '',
+      password: user.password ?? '',
+      roles: user.role ?? '',
+    },
+    enableReinitialize: true,
+    validationSchema: editUserSchema,
+    onSubmit: async (values, {setSubmitting}) => {
+      setSubmitting(true)
+      try {
+        if (isNotEmpty(values.id)) {
+          await updateUser(values)
+          addRole(values)
+        } else {
+          await register(values)
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setSubmitting(false)
+        cancel(true)
       }
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setSubmitting(false)
-      cancel(true)
-    }
-  },
-})
+    },
+  })
 
   return (
     <>
@@ -192,16 +189,19 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
             <label className='required fw-bold fs-6 mb-2'>Role</label>
 
             <select
-              {...formik.getFieldProps('role')}
               className={clsx(
                 'form-select form-select-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.role && formik.errors.role},
-                {'is-valid': formik.touched.role && !formik.errors.role}
+                {'is-invalid': formik.touched.roles && formik.errors.roles},
+                {'is-valid': formik.touched.roles && !formik.errors.roles}
               )}
-              disabled={formik.isSubmitting || isUserLoading}
+              disabled={formik.isSubmitting || isRoleLoading}
+              // Manually update Formik to store the value inside an array
+              onChange={(e) => formik.setFieldValue('roles', [e.target.value])}
+              value={formik.values.roles[0] || ''}
+              onBlur={formik.handleBlur}
+              name='roles'
             >
               <option value=''>Select a role</option>
-
               {roles?.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
@@ -209,9 +209,9 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
               ))}
             </select>
 
-            {formik.touched.role && formik.errors.role && (
+            {formik.touched.roles && formik.errors.roles && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.role}</span>
+                <span role='alert'>{formik.errors.roles}</span>
               </div>
             )}
           </div>
@@ -255,4 +255,3 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles}) => {
 }
 
 export {UserEditModalForm}
-
