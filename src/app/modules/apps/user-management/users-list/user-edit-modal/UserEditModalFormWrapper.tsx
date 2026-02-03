@@ -48,7 +48,11 @@ const {
         isUserLoading={false}
         user={{id: undefined}}
         isRoleLoading={isRoleLoading}
+<<<<<<< Updated upstream
         roles={Array.isArray(roles) ? roles : roles?.data || []}
+=======
+        roles={roles?.data || []}
+>>>>>>> Stashed changes
       />
     )
   }
