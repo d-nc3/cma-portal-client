@@ -47,19 +47,7 @@ const PrivateRoutes = () => {
         </Route>
       )
     }
-<<<<<<< Updated upstream
-      <Route element={<AdminLayout />}>
-          <Route path='dashboard' element={<DashboardWrapper />} />
-          <Route path='builder' element={<BuilderPageWrapper />} />
-          <Route path='menu-test' element={<MenuTestPage />} />
-          <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
-          
-          <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
-          <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
-        </Route>
-=======
     
->>>>>>> Stashed changes
       {/* 3. GLOBAL REDIRECTS & 404 */}
       <Route path='auth/*' element={<Navigate to='/dashboard' />} />
       <Route path='*' element={<Navigate to='/error/404' />} />

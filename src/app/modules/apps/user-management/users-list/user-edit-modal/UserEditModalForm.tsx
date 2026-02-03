@@ -202,10 +202,6 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
               name='roles'
             >
               <option value=''>Select a role</option>
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
               {roles?.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
