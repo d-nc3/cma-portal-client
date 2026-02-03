@@ -200,10 +200,19 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading}) => {
               disabled={formik.isSubmitting || isUserLoading}
             >
               <option value=''>Select a role</option>
+<<<<<<< Updated upstream
               <option value='admin'>Admin</option>
               <option value='manager'>Manager</option>
               <option value='user'>User</option>
               {/* Add more roles if needed */}
+=======
+
+              {roles?.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+>>>>>>> Stashed changes
             </select>
 
             {formik.touched.role && formik.errors.role && (

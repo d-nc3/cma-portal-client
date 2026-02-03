@@ -13,7 +13,7 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
-import { logoutUser } from './_requests'
+import {logoutUser} from './_requests'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -21,14 +21,18 @@ type AuthContextProps = {
   currentUser: UserModel | undefined
   setCurrentUser: Dispatch<SetStateAction<UserModel | undefined>>
   logout: () => void
+  hasPermission: (permission: string) => boolean
+  hasRole: (role: string) => boolean
 }
-
+  
 const initAuthContextPropsState = {
   auth: authHelper.getAuth(),
   saveAuth: () => {},
   currentUser: undefined,
   setCurrentUser: () => {},
   logout: () => {},
+  hasPermission: () => false,
+  hasRole: () => false,
 }
 
 const AuthContext = createContext<AuthContextProps>(initAuthContextPropsState)
@@ -40,7 +44,7 @@ const useAuth = () => {
 const AuthProvider: FC<WithChildren> = ({children}) => {
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth())
   const [currentUser, setCurrentUser] = useState<UserModel | undefined>()
-  
+
   const saveAuth = (auth: AuthModel | undefined) => {
     setAuth(auth)
     if (auth) {
@@ -50,20 +54,38 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
     }
   }
 
-const logout = async () => {
-  try {
-    await logoutUser();
-  } catch (err) {
-    console.error(err);
-  } finally {
-  
-    saveAuth(undefined);
-    setCurrentUser(undefined);
+  const logout = async () => {
+    try {
+      await logoutUser()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      saveAuth(undefined)
+      setCurrentUser(undefined)
+    }
   }
-};
+
+  const hasPermission = (permission: string): boolean => {
+    return Boolean(currentUser?.permissions?.includes(permission))
+  }
+
+
+  const hasRole = (role: string): boolean => {
+    return Boolean(currentUser?.roles?.includes(role))
+  }
 
   return (
-    <AuthContext.Provider value={{auth, saveAuth, currentUser, setCurrentUser, logout}}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        saveAuth,
+        currentUser,
+        setCurrentUser,
+        logout,
+        hasPermission,
+        hasRole,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
@@ -73,32 +95,31 @@ const AuthInit: FC<WithChildren> = ({children}) => {
   const {logout, setCurrentUser} = useAuth()
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
-  
-useEffect(() => {
-  const requestUser = async () => {
-    try {
-      if (!didRequest.current) {
-        const response = await getUserByToken();
 
-        if (response.data) {
-          setCurrentUser(response.data);
+  useEffect(() => {
+    const requestUser = async () => {
+      try {
+        if (!didRequest.current) {
+          const response = await getUserByToken()
+
+          if (response.data) {
+            setCurrentUser(response.data)
+          }
         }
+      } catch (error) {
+        if (!didRequest.current) {
+          logout()
+        }
+      } finally {
+        setShowSplashScreen(false)
       }
-    } catch (error) {
-      if (!didRequest.current) {
-        logout();
-      }
-    } finally {
-      setShowSplashScreen(false);
+
+      return () => (didRequest.current = true)
     }
 
-    return () => (didRequest.current = true);
-  };
-
-  requestUser();
-  // eslint-disable-next-line
-}, []);
-
+    requestUser()
+    // eslint-disable-next-line
+  }, [])
 
   return showSplashScreen ? <LayoutSplashScreen /> : <>{children}</>
 }
