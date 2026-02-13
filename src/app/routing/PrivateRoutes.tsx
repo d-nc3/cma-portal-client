@@ -10,48 +10,55 @@ import {WithChildren} from '../../_metronic/helpers'
 import {useAuth} from '../modules/auth'
 import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
 
+
 const PrivateRoutes = () => {
   const {currentUser, hasRole} = useAuth()
+// 1. Externalize Lazy Imports
+const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
+const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
+const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
+const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
+const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
+const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
 
-  // Lazy components
-  const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
-  const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
-  const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
-  const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
-  const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
-  const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
+interface AppRoute {
+  path: string
+  element: React.ReactNode
+  roles?: string[]     
+  isSuspensed?: boolean 
+}
+
+const routesConfig: AppRoute[] = [
+  {path: 'dashboard', element: <DashboardWrapper />},
+  {path: 'builder', element: <BuilderPageWrapper />, roles: ['admin']},
+  {path: 'menu-test', element: <MenuTestPage />, roles: ['admin']},
+  {path: 'apps/user-management/*', element: <UsersPage />, roles: ['admin'], isSuspensed: true},
+  {path: 'crafted/pages/profile/*', element: <ProfilePage />, roles: ['admin', 'dispatcher'], isSuspensed: true},
+  {path: 'apps/chat/*', element: <ChatPage />, roles: ['admin', 'driver'], isSuspensed: true},
+  {path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true},
+  {path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true},
+  {path: 'crafted/pages/wizards/*', element: <WizardsPage />, isSuspensed: true},
+]
 
   return (
     <Routes>
       <Route element={<MasterLayout />}>
         <Route path='auth/*' element={<Navigate to='/dashboard' />} />
-        <Route path='dashboard' element={<DashboardWrapper />} />
-        
-        {hasRole(['admin']) && (
-          <>
-            <Route path='builder' element={<BuilderPageWrapper />} />
-            <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
-            <Route path='menu-test' element={<MenuTestPage />} />
-          </>
-        )}
-        {hasRole(['admin', 'dispatcher']) && (
-           <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
-        )}
-
-        
-        {hasRole(['admin', 'driver']) && (
-           <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
-        )}
-
-        {hasRole(['admin', 'inventory']) && (
-           <Route path='crafted/widgets/*' element={<SuspensedView><WidgetsPage /></SuspensedView>} />
-        )}
-
-
-        <Route path='crafted/account/*' element={<SuspensedView><AccountPage /></SuspensedView>} />
-        <Route path='crafted/pages/wizards/*' element={<SuspensedView><WizardsPage /></SuspensedView>} />
-
-        {/* Page Not Found */}
+        {routesConfig
+          .filter((route) => !route.roles || hasRole(route.roles))
+          .map(({path, element, isSuspensed}, index) => (
+            <Route
+              key={`${path}-${index}`}
+              path={path}
+              element={
+                isSuspensed ? (
+                  <SuspensedView>{element}</SuspensedView>
+                ) : (
+                  element
+                )
+              }
+            />
+          ))}
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
     </Routes>
