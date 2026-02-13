@@ -13,7 +13,7 @@ type ProtectedRouteProps = {
 const ProtectedRoute = ({ allowedRoles, allowedPermissions, children }: ProtectedRouteProps) => {
   const { currentUser,hasPermission,hasRole } = useAuth();
 
-  // Redirect to login if not logged in
+  
   if (!currentUser) return <Navigate to="/auth/login" replace />;
 
 
