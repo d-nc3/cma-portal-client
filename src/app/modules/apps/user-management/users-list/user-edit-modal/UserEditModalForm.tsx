@@ -1,12 +1,12 @@
-import {FC, useState} from 'react'
+import {FC} from 'react'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
-import {isNotEmpty, toAbsoluteUrl} from '../../../../../../_metronic/helpers'
+import {isNotEmpty} from '../../../../../../_metronic/helpers'
 import {UserModel} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from '../core/ListViewProvider'
 import {UsersListLoading} from '../components/loading/UsersListLoading'
-import {updateUser, register, addRole} from '../core/_requests'
+import {updateUser, register} from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 import {RoleModel} from '../../roles-list/core/_models'
 
@@ -23,14 +23,18 @@ const editUserSchema = Yup.object().shape({
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
-
-  first_name: Yup.string().min(3, 'Minimum 3 symbols').required('First name is required'),
-  last_name: Yup.string().min(3, 'Minimum 3 symbols').required('Last name is required'),
-  password: Yup.string().min(3, 'Minimum 3 symbols').required('Password is required'),
+  name: Yup.string().min(3, 'Minimum 3 symbols').required('Full name is required'),
+  password: Yup.string().test('required-if-new', 'Password is required', function (value) {
+    const {id} = this.parent
+    if (!id && !value) return false
+    if (id && value && value.length < 3) return false
+    return true
+  }),
   roles: Yup.array()
     .of(Yup.string())
     .min(1, 'At least one role is required')
     .required('Role is required'),
+  status: Yup.boolean(), // Changed to boolean for the switch
 })
 
 const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading}) => {
@@ -44,40 +48,49 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
     setItemIdForUpdate(undefined)
   }
 
-  const blankImg = toAbsoluteUrl('/media/svg/avatars/blank.svg')
   const formik = useFormik({
     initialValues: {
       id: user.id ?? '',
       email: user.email ?? '',
-      first_name: user.first_name ?? '',
-      last_name: user.last_name ?? '',
-      password: user.password ?? '',
-      roles: user.role ?? '',
+      name: user.fullname ?? '',
+      password: '',
+      roles: user.role ? [user.role.toString()] : [],
+      status: user.status ?? '', 
     },
     enableReinitialize: true,
     validationSchema: editUserSchema,
-    onSubmit: async (values, {setSubmitting}) => {
+    onSubmit: async (values, {setSubmitting, setErrors}) => {
       setSubmitting(true)
+
+      const payload = {
+        id: values.id, // Explicitly include ID
+        email: values.email,
+        name: values.name, // This becomes 'fullname' in the next step
+        fullname: values.name, // Ensure this matches backend expectation
+        password: values.password,
+        roleId: values.roles?.[0], // Prisma needs the string ID, not the array
+        status: values.status, // Boolean: true/false
+      }
+
       try {
         if (isNotEmpty(values.id)) {
-          await updateUser(values)
-          addRole(values)
+          await updateUser(payload)
         } else {
-          await register(values)
+          await register(payload)
         }
-      } catch (error) {
-        console.error(error)
+        cancel(true)
+      } catch (error: any) {
+        if (error.response?.status === 409) {
+          setErrors({email: 'This email is already taken'})
+        }
       } finally {
         setSubmitting(false)
-        cancel(true)
       }
     },
   })
-
   return (
     <>
       <form id='kt_modal_add_user_form' className='form' onSubmit={formik.handleSubmit} noValidate>
-        {/* begin::Scroll */}
         <div
           className='d-flex flex-column scroll-y me-n7 pe-7'
           id='kt_modal_add_user_scroll'
@@ -88,7 +101,7 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
           data-kt-scroll-wrappers='#kt_modal_add_user_scroll'
           data-kt-scroll-offset='300px'
         >
-          {/* begin::Input group - Email */}
+          {/* Email */}
           <div className='fv-row mb-7'>
             <label className='required fw-bold fs-6 mb-2'>Email</label>
             <input
@@ -100,106 +113,81 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
                 {'is-valid': formik.touched.email && !formik.errors.email}
               )}
               type='email'
-              name='email'
-              autoComplete='off'
               disabled={formik.isSubmitting || isUserLoading}
             />
             {formik.touched.email && formik.errors.email && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.email}</span>
+                <div className='fv-help-block'>
+                  <span role='alert'>{formik.errors.email}</span>
+                </div>
               </div>
             )}
           </div>
-          {/* end::Input group */}
 
-          {/* begin::Input group - First Name */}
+          {/* Full Name */}
           <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>First Name</label>
+            <label className='required fw-bold fs-6 mb-2'>Full Name</label>
             <input
-              placeholder='First Name'
-              {...formik.getFieldProps('first_name')}
+              placeholder='Full Name'
+              {...formik.getFieldProps('name')}
               className={clsx(
                 'form-control form-control-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.first_name && formik.errors.first_name},
-                {'is-valid': formik.touched.first_name && !formik.errors.first_name}
+                {'is-invalid': formik.touched.name && formik.errors.name},
+                {'is-valid': formik.touched.name && !formik.errors.name}
               )}
               type='text'
-              name='first_name'
-              autoComplete='off'
               disabled={formik.isSubmitting || isUserLoading}
             />
-            {formik.touched.first_name && formik.errors.first_name && (
+            {formik.touched.name && formik.errors.name && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.first_name}</span>
+                <div className='fv-help-block'>
+                  <span role='alert'>{formik.errors.name}</span>
+                </div>
               </div>
             )}
           </div>
-          {/* end::Input group */}
 
-          {/* begin::Input group - Last Name */}
+          {/* Password */}
           <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>Last Name</label>
-            <input
-              placeholder='Last Name'
-              {...formik.getFieldProps('last_name')}
-              className={clsx(
-                'form-control form-control-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.last_name && formik.errors.last_name},
-                {'is-valid': formik.touched.last_name && !formik.errors.last_name}
+            <label className={clsx('fw-bold fs-6 mb-2', {required: !formik.values.id})}>
+              Password{' '}
+              {formik.values.id && (
+                <span className='text-muted fs-7'>(Leave blank to keep current)</span>
               )}
-              type='text'
-              name='last_name'
-              autoComplete='off'
-              disabled={formik.isSubmitting || isUserLoading}
-            />
-            {formik.touched.last_name && formik.errors.last_name && (
-              <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.last_name}</span>
-              </div>
-            )}
-          </div>
-          {/* end::Input group */}
-
-          {/* begin::Input group - Password (generated or user input) */}
-          <div className='fv-row mb-7'>
-            <label className='required fw-bold fs-6 mb-2'>Password</label>
+            </label>
             <input
               placeholder='Password'
               {...formik.getFieldProps('password')}
               className={clsx(
                 'form-control form-control-solid mb-3 mb-lg-0',
                 {'is-invalid': formik.touched.password && formik.errors.password},
-                {'is-valid': formik.touched.password && !formik.errors.password}
+                {
+                  'is-valid':
+                    formik.touched.password && !formik.errors.password && formik.values.password,
+                }
               )}
               type='password'
-              name='password'
-              autoComplete='off'
               disabled={formik.isSubmitting || isUserLoading}
             />
             {formik.touched.password && formik.errors.password && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.password}</span>
+                <div className='fv-help-block'>
+                  <span role='alert'>{formik.errors.password}</span>
+                </div>
               </div>
             )}
           </div>
-          {/* end::Input group */}
 
-          {/* begin::Input group - Role */}
+          {/* Role */}
           <div className='fv-row mb-7'>
             <label className='required fw-bold fs-6 mb-2'>Role</label>
-
             <select
-              className={clsx(
-                'form-select form-select-solid mb-3 mb-lg-0',
-                {'is-invalid': formik.touched.roles && formik.errors.roles},
-                {'is-valid': formik.touched.roles && !formik.errors.roles}
-              )}
-              disabled={formik.isSubmitting || isRoleLoading}
-              // Manually update Formik to store the value inside an array
+              className={clsx('form-select form-select-solid mb-3 mb-lg-0', {
+                'is-invalid': formik.touched.roles && formik.errors.roles,
+              })}
               onChange={(e) => formik.setFieldValue('roles', [e.target.value])}
-              value={formik.values.roles[0] || ''}
-              onBlur={formik.handleBlur}
-              name='roles'
+              value={formik.values.roles?.[0] || ''}
+              disabled={formik.isSubmitting || isRoleLoading}
             >
               <option value=''>Select a role</option>
               {roles?.map((role) => (
@@ -208,24 +196,45 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
                 </option>
               ))}
             </select>
-
             {formik.touched.roles && formik.errors.roles && (
               <div className='fv-plugins-message-container'>
-                <span role='alert'>{formik.errors.roles}</span>
+                <div className='fv-help-block'>
+                  <span role='alert'>{formik.errors.roles}</span>
+                </div>
               </div>
             )}
           </div>
-          {/* end::Input group */}
 
-          {/* end::Scroll */}
+          {/* Status Switch - Fixed for TypeScript */}
+            <div className='fv-row mb-7'>
+              <label className='required fw-bold fs-6 mb-2'>Status</label>
+              <select
+                className={clsx(
+                  'form-select form-select-solid mb-3 mb-lg-0',
+                  {'is-invalid': formik.touched.status && formik.errors.status},
+                  {'is-valid': formik.touched.status && !formik.errors.status}
+                )}
+                {...formik.getFieldProps('status')}
+                disabled={formik.isSubmitting || isUserLoading}
+              >
+                <option value=''>Select Status</option>
+                <option value='ACTIVE'>Active</option>
+                <option value='INACTIVE'>Inactive</option>
+              </select>
+              {formik.touched.status && formik.errors.status && (
+                <div className='fv-plugins-message-container'>
+                  <div className='fv-help-block'>
+                    <span role='alert'>{formik.errors.status}</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
-          {/* begin::Actions */}
           <div className='text-center pt-15'>
             <button
               type='reset'
               onClick={() => cancel()}
               className='btn btn-light me-3'
-              data-kt-users-modal-action='cancel'
               disabled={formik.isSubmitting || isUserLoading}
             >
               Discard
@@ -234,8 +243,7 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
             <button
               type='submit'
               className='btn btn-primary'
-              data-kt-users-modal-action='submit'
-              disabled={isUserLoading || formik.isSubmitting || !formik.isValid || !formik.touched}
+              disabled={isUserLoading || formik.isSubmitting || !formik.isValid}
             >
               <span className='indicator-label'>Submit</span>
               {(formik.isSubmitting || isUserLoading) && (
@@ -246,7 +254,6 @@ const UserEditModalForm: FC<Props> = ({user, isUserLoading, roles, isRoleLoading
               )}
             </button>
           </div>
-          {/* end::Actions */}
         </div>
       </form>
       {(formik.isSubmitting || isUserLoading) && <UsersListLoading />}

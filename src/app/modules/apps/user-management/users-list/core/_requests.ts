@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {UserModel} from './_models'
-import { getAuth } from '../../../../auth'
+import {getAuth} from '../../../../auth'
 const API_URL = process.env.REACT_APP_API_URL
 
 export const REGISTER_URL = `${API_URL}/api/users/register-user`
@@ -11,43 +11,44 @@ export const GET_USER_BY_ID = `${API_URL}/api/users/userById`
 export const DELETE_USER_URL = `${API_URL}/api/users/deleteUser`
 export const ADD_ROLE_TO_USER_URL = `${API_URL}/api/user-roles/create`
 
-
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config) => {
-    const auth = getAuth();
+    const auth = getAuth()
     if (auth && auth.token) {
-      config.headers.Authorization = `Bearer ${auth.token}`;
+      config.headers.Authorization = `Bearer ${auth.token}`
     }
-    return config;
+    return config
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
 // Server should return AuthModel
 export function register(values: any) {
   return axios.post(REGISTER_URL, {
     email: values.email,
-    fullname: `${values.first_name} ${values.last_name}`,
+    fullname: values.name,
     password: values.password,
+    roleId: values.roleId,
+    status: values.status,
   })
 }
 
 export function updateUser(values: any) {
   return axios.put(`${EDIT_USERS_URL}/${values.id}`, {
     email: values.email,
-    password: values.password,
-    fullname: `${values.first_name} ${values.last_name}`,
-    role: values.roles
+    fullname: values.name,
+    ...(values.password && {password: values.password}),
+    roleId: values.roleId,
+    status: values.status,
   })
 }
 
 export async function getUsers() {
   try {
-
-    const response = await axios.get(GET_USER_URL)
+    const response = await axios.get(GET_USER_URL, {withCredentials: true})
 
     return response.data
   } catch (error: any) {
@@ -58,29 +59,25 @@ export async function getUsers() {
 
 export async function getUserById(roleId) {
   try {
-    const response = await axios.get(
-      `${GET_USER_BY_ID}/${roleId}`,
-      { withCredentials: true }
-    );
+    const response = await axios.get(`${GET_USER_BY_ID}/${roleId}`, {withCredentials: true})
 
-    return response.data;
+    return response.data
   } catch (error) {
-    console.error('Error fetching role by ID:', error);
-    throw error;
+    console.error('Error fetching role by ID:', error)
+    throw error
   }
 }
-
 
 export async function deleteUser(userId) {
   try {
     const response = await axios.delete(`${DELETE_USER_URL}/${userId}`, {
       withCredentials: true,
-    });
+    })
 
-    return response.data;
+    return response.data
   } catch (error: any) {
-    console.error('Error deleting role:', error.response?.data || error.message);
-    throw error;
+    console.error('Error deleting role:', error.response?.data || error.message)
+    throw error
   }
 }
 

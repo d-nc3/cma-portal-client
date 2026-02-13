@@ -11,9 +11,8 @@ import {
 import {LayoutSplashScreen} from '../../../../_metronic/layout/core'
 import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
-import {getUserByToken} from './_requests'
+import {getUserByToken, logoutUser} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
-import {logoutUser} from './_requests'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -21,10 +20,10 @@ type AuthContextProps = {
   currentUser: UserModel | undefined
   setCurrentUser: Dispatch<SetStateAction<UserModel | undefined>>
   logout: () => void
-  hasPermission: (permission: string) => boolean
-  hasRole: (role: string) => boolean
+  hasPermission: (permission: string | string[]) => boolean
+  hasRole: (role: string | string[]) => boolean
 }
-  
+
 const initAuthContextPropsState = {
   auth: authHelper.getAuth(),
   saveAuth: () => {},
@@ -37,9 +36,7 @@ const initAuthContextPropsState = {
 
 const AuthContext = createContext<AuthContextProps>(initAuthContextPropsState)
 
-const useAuth = () => {
-  return useContext(AuthContext)
-}
+const useAuth = () => useContext(AuthContext)
 
 const AuthProvider: FC<WithChildren> = ({children}) => {
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth())
@@ -65,13 +62,26 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
     }
   }
 
-  const hasPermission = (permission: string): boolean => {
-    return Boolean(currentUser?.permissions?.includes(permission))
+  const hasPermission = (permission: string | string[]): boolean => {
+    const perms = currentUser?.permissions
+    const userPermissions = Array.isArray(perms) ? perms : []
+    
+    if (Array.isArray(permission)) {
+      return permission.some((p) => userPermissions.includes(p))
+    }
+    return userPermissions.includes(permission)
   }
 
+  const hasRole = (role: string | string[]): boolean => {
+    const rolesData = currentUser?.roles
+    const userRoles = (Array.isArray(rolesData) ? rolesData : []).map((r: any) => 
+        String(r).toLowerCase()
+    )
 
-  const hasRole = (role: string): boolean => {
-    return Boolean(currentUser?.roles?.includes(role))
+    if (Array.isArray(role)) {
+      return role.some((r) => userRoles.includes(r.toLowerCase()))
+    }
+    return userRoles.includes(role.toLowerCase())
   }
 
   return (
@@ -92,7 +102,7 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
 }
 
 const AuthInit: FC<WithChildren> = ({children}) => {
-  const {logout, setCurrentUser} = useAuth()
+  const {setCurrentUser, logout} = useAuth()
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
 
@@ -100,10 +110,9 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     const requestUser = async () => {
       try {
         if (!didRequest.current) {
-          const response = await getUserByToken()
-
-          if (response.data) {
-            setCurrentUser(response.data)
+          const {data} = await getUserByToken()
+          if (data) {
+            setCurrentUser(data)
           }
         }
       } catch (error) {
@@ -113,12 +122,13 @@ const AuthInit: FC<WithChildren> = ({children}) => {
       } finally {
         setShowSplashScreen(false)
       }
-
-      return () => (didRequest.current = true)
     }
 
     requestUser()
-    // eslint-disable-next-line
+
+    return () => {
+      didRequest.current = true
+    }
   }, [])
 
   return showSplashScreen ? <LayoutSplashScreen /> : <>{children}</>

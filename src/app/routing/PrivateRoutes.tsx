@@ -13,6 +13,7 @@ import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
 const PrivateRoutes = () => {
   const {currentUser, hasRole} = useAuth()
 
+  // Lazy components
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
   const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
   const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
@@ -20,37 +21,39 @@ const PrivateRoutes = () => {
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
   const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
 
- return (
+  return (
     <Routes>
-      {/* 1. ADMIN SEGMENT */}
-      {hasRole('Admin') && (
-        <Route element={<AdminLayout />}>
-          <Route path='dashboard' element={<DashboardWrapper />} />
-          <Route path='builder' element={<BuilderPageWrapper />} />
-          <Route path='menu-test' element={<MenuTestPage />} />
-          <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
-          
-          <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
-          <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
-        </Route>
-      )}
-    {
-      hasRole('Driver2') && (
-        <Route element={<AdminLayout />}>
-          <Route path='dashboard' element={<DashboardWrapper />} />
-          <Route path='builder' element={<BuilderPageWrapper />} />
-          <Route path='menu-test' element={<MenuTestPage />} />
-          <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
-          
-          <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
-          <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
-        </Route>
-      )
-    }
-    
-      {/* 3. GLOBAL REDIRECTS & 404 */}
-      <Route path='auth/*' element={<Navigate to='/dashboard' />} />
-      <Route path='*' element={<Navigate to='/error/404' />} />
+      <Route element={<MasterLayout />}>
+        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        <Route path='dashboard' element={<DashboardWrapper />} />
+        
+        {hasRole(['admin']) && (
+          <>
+            <Route path='builder' element={<BuilderPageWrapper />} />
+            <Route path='apps/user-management/*' element={<SuspensedView><UsersPage /></SuspensedView>} />
+            <Route path='menu-test' element={<MenuTestPage />} />
+          </>
+        )}
+        {hasRole(['admin', 'dispatcher']) && (
+           <Route path='crafted/pages/profile/*' element={<SuspensedView><ProfilePage /></SuspensedView>} />
+        )}
+
+        
+        {hasRole(['admin', 'driver']) && (
+           <Route path='apps/chat/*' element={<SuspensedView><ChatPage /></SuspensedView>} />
+        )}
+
+        {hasRole(['admin', 'inventory']) && (
+           <Route path='crafted/widgets/*' element={<SuspensedView><WidgetsPage /></SuspensedView>} />
+        )}
+
+
+        <Route path='crafted/account/*' element={<SuspensedView><AccountPage /></SuspensedView>} />
+        <Route path='crafted/pages/wizards/*' element={<SuspensedView><WizardsPage /></SuspensedView>} />
+
+        {/* Page Not Found */}
+        <Route path='*' element={<Navigate to='/error/404' />} />
+      </Route>
     </Routes>
   )
 }

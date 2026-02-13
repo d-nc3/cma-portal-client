@@ -5,6 +5,7 @@ export interface UserModel {
   password?: string | undefined
   email?: string
   first_name?: string
+  status?: string | undefined
   last_name?: string
   fullname?: string
   occupation?: string

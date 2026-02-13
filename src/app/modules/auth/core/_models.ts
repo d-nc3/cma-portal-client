@@ -54,7 +54,7 @@ export interface UserModel {
   fullname?: string
   occupation?: string
   companyName?: string
-  roles?:string[]
+  roles?:string
   permissions?:string[]
   phone?: string
   pic?: string
