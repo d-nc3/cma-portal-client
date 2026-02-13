@@ -22,8 +22,7 @@ type Props = {
 }
 
 const rolePermissionSchema = Yup.object().shape({
-  role_id: Yup.string()
-    .required('Role is required'), // Must select a role
+  role_id: Yup.string().required('Role is required'), // Must select a role
 
   permission_id: Yup.array()
     .of(Yup.string()) // Each selected permission must be a string (ID)
@@ -112,43 +111,46 @@ const RolePermissionEditModalForm: FC<Props> = ({
             </select>
 
             {formik.touched.role_id && formik.errors.role_id && (
-               <div className='invalid-feedback d-block'>{formik.errors.role_id}</div>
+              <div className='invalid-feedback d-block'>{formik.errors.role_id}</div>
             )}
           </div>
-          {/* end::Input group */}
+
           <div className='fv-row mb-7'>
             <label className='required fw-bold fs-6 mb-2'>Permissions</label>
             <Select
               isMulti
-              name='permissions'  
-              options={permissions.map((permission) => ({
-                value: permission.id!,
-                label: permission.name,
+              name='permission_id'
+              placeholder='Select permissions...'
+              options={permissions.map((p) => ({
+                value: p.id!,
+                label: p.name,
               }))}
+              // Maps the array of IDs in Formik state back to {label, value} objects for display
+              value={permissions
+                .filter((p) => formik.values.permission_id?.includes(p.id!))
+                .map((p) => ({
+                  value: p.id!,
+                  label: p.name,
+                }))}
+              onChange={(selectedOptions) => {
+                // Extracts only the IDs (strings) to store in Formik
+                const values = selectedOptions ? selectedOptions.map((opt) => opt.value) : []
+                formik.setFieldValue('permission_id', values)
+              }}
+              onBlur={() => formik.setFieldTouched('permission_id', true)}
               className={clsx(
                 'basic-multi-select',
                 {'is-invalid': formik.touched.permission_id && formik.errors.permission_id},
                 {'is-valid': formik.touched.permission_id && !formik.errors.permission_id}
               )}
               classNamePrefix='select'
-              onChange={(selectedOptions) => {
-                const selectedValues = selectedOptions
-                  ? selectedOptions.map((option) => option.value)
-                  : []
-                formik.setFieldValue('permission_id', selectedValues)
-              }}
-              value={permissions
-                .filter((permission) =>
-                  formik.values.permission_id?.includes(permission.id!)
-                )
-                .map((permission) => ({
-                  value: permission.id!,  
-                  label: permission.name,
-                }))}
               isDisabled={formik.isSubmitting || isRolePermissionLoading}
             />
+
             {formik.touched.permission_id && formik.errors.permission_id && (
-              <div className='invalid-feedback d-block'>{formik.errors.permission_id}</div>
+              <div className='invalid-feedback d-block'>
+                <span role='alert'>{formik.errors.permission_id as string}</span>
+              </div>
             )}
           </div>
 
