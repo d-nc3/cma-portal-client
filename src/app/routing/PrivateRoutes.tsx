@@ -47,8 +47,7 @@ const routesConfig: AppRoute[] = [
         {routesConfig
           .filter((route) => !route.roles || hasRole(route.roles))
           .map(({path, element, isSuspensed}, index) => (
-            <Route
-              key={`${path}-${index}`}
+            <Route key={`${path}-${index}`}
               path={path}
               element={
                 isSuspensed ? (
