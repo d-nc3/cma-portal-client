@@ -1,45 +1,82 @@
-import axios, {AxiosResponse} from 'axios'
-import {ID, Response} from '../../../../../../_metronic/helpers'
-import {User, UsersQueryResponse} from './_models'
+import axios from 'axios'
+import {UserModel} from './_models'
+import {getAuth} from '../../../../auth'
+const API_URL = process.env.REACT_APP_API_URL
 
-const API_URL = process.env.REACT_APP_THEME_API_URL
-const USER_URL = `${API_URL}/user`
-const GET_USERS_URL = `${API_URL}/users/query`
+export const REGISTER_URL = `${API_URL}/api/users/register`
+export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
+export const GET_USER_URL = `${API_URL}/api/users/all  `
+export const EDIT_USERS_URL = `${API_URL}/api/users/update`
+export const GET_USER_BY_ID = `${API_URL}/api/users`
+export const DELETE_USER_URL = `${API_URL}/api/users/delete`
 
-const getUsers = (query: string): Promise<UsersQueryResponse> => {
-  return axios
-    .get(`${GET_USERS_URL}?${query}`)
-    .then((d: AxiosResponse<UsersQueryResponse>) => d.data)
+axios.defaults.withCredentials = true
+axios.interceptors.request.use(
+  (config) => {
+    const auth = getAuth()
+    if (auth && auth.token) {
+      config.headers.Authorization = `Bearer ${auth.token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+
+export function register(values: any) {
+  return axios.post(REGISTER_URL, {
+    email: values.email,
+    fullname: values.name,
+    password: values.password,
+    roleId: values.roleId,
+    status: values.status
+  })
 }
 
-const getUserById = (id: ID): Promise<User | undefined> => {
-  return axios
-    .get(`${USER_URL}/${id}`)
-    .then((response: AxiosResponse<Response<User>>) => response.data)
-    .then((response: Response<User>) => response.data)
+export function updateUser(values: any) {
+  return axios.put(`${EDIT_USERS_URL}/${values.id}`, {
+    email: values.email,
+    fullname: values.name,
+    ...(values.password && {password: values.password}),
+    roleId: values.roleId,
+    status: values.status,
+  })
 }
 
-const createUser = (user: User): Promise<User | undefined> => {
-  return axios
-    .put(USER_URL, user)
-    .then((response: AxiosResponse<Response<User>>) => response.data)
-    .then((response: Response<User>) => response.data)
+export async function getUsers() {
+  try {
+    const response = await axios.get(GET_USER_URL, {withCredentials: true})
+
+    return response.data
+  } catch (error: any) {
+    console.error('Error fetching users:', error.response?.data || error.message)
+    throw error
+  }
 }
 
-const updateUser = (user: User): Promise<User | undefined> => {
-  return axios
-    .post(`${USER_URL}/${user.id}`, user)
-    .then((response: AxiosResponse<Response<User>>) => response.data)
-    .then((response: Response<User>) => response.data)
+export async function getUserById(roleId) {
+  try {
+    const response = await axios.get(`${GET_USER_BY_ID}/${roleId}`, {withCredentials: true})
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetching role by ID:', error)
+    throw error
+  }
 }
 
-const deleteUser = (userId: ID): Promise<void> => {
-  return axios.delete(`${USER_URL}/${userId}`).then(() => {})
+export async function deleteUser(userId) {
+  try {
+    const response = await axios.delete(`${DELETE_USER_URL}/${userId}`, {
+      withCredentials: true,
+    })
+
+    return response.data
+  } catch (error: any) {
+    console.error('Error deleting role:', error.response?.data || error.message)
+    throw error
+  }
 }
 
-const deleteSelectedUsers = (userIds: Array<ID>): Promise<void> => {
-  const requests = userIds.map((id) => axios.delete(`${USER_URL}/${id}`))
-  return axios.all(requests).then(() => {})
-}
-
-export {getUsers, deleteUser, deleteSelectedUsers, getUserById, createUser, updateUser}

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {AuthModel, UserModel} from './_models'
+import { removeAuth } from './AuthHelpers'
 
 const API_URL = process.env.REACT_APP_API_URL
 
@@ -13,11 +14,14 @@ export const LOGOUT_URL = `${API_URL}/api/users/logout`;
 axios.defaults.withCredentials = true
 // Server should return AuthModel
 export function login(email: string, password: string) {
+  
   return axios.post<AuthModel>(LOGIN_URL, {
     email,
     password,
   })
+  
 }
+
 
 export async function logoutUser() {
   try {
@@ -59,9 +63,9 @@ export async function getUserByToken() {
       token: string
       data: UserModel
     }>(
-      GET_USER_BY_ACCESSTOKEN_URL,
-      {},
-      { withCredentials: true }
+        GET_USER_BY_ACCESSTOKEN_URL,
+        {},
+        { withCredentials: true }
     );
 
     return {
