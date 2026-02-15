@@ -2,10 +2,10 @@ import axios from 'axios'
 const API_URL = process.env.REACT_APP_API_URL
 
 export const CREATE_PERMISSIONS_URL = `${API_URL}/api/role-permissions/create`
-export const GET_ROLE_PERMISSIONS_URL = `${API_URL}/api/role-permissions/getAll`
-export const DELETE_URL = `${API_URL}/api/role-permissions/deleteRolePermission`
-export const EDIT_ROLE_URL = `${API_URL}/api/role-permissions/updateRolePermission`
-export const GET_BY_ID = `${API_URL}/api/role-permissions/getById`
+export const GET_ROLE_PERMISSIONS_URL = `${API_URL}/api/role-permissions/all`
+export const DELETE_URL = `${API_URL}/api/role-permissions/delete`
+export const EDIT_ROLE_URL = `${API_URL}/api/role-permissions/update`
+export const GET_BY_ID = `${API_URL}/api/role-permissions`
 
 
 axios.defaults.withCredentials = true

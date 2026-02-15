@@ -2,12 +2,11 @@ import axios from 'axios'
 import {RoleModel} from './_models'
 const API_URL = process.env.REACT_APP_API_URL
 
-export const REGISTER_URL = `${API_URL}/api/roles/createRole`
-export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
-export const GET_ROLES_URL = `${API_URL}/api/roles/getAllRoles`
-export const EDIT_ROLE_URL = `${API_URL}/api/roles/updateRole`
-export const GET_ROLE_BY_ID = `${API_URL}/api/roles/roleById`
-export const DELETE_ROLE_URL = `${API_URL}/api/roles/deleteRole`
+export const REGISTER_URL = `${API_URL}/api/roles/create`
+export const GET_ROLES_URL = `${API_URL}/api/roles/all`
+export const EDIT_ROLE_URL = `${API_URL}/api/roles/update`
+export const GET_ROLE_BY_ID = `${API_URL}/api/roles`
+export const DELETE_ROLE_URL = `${API_URL}/api/roles/delete`
 
 axios.defaults.withCredentials = true
 
@@ -38,6 +37,7 @@ export async function getRoles() {
     throw error
   }
 }
+
 
 export const getRoleById = async (roleId) => {
   try {

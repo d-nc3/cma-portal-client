@@ -7,10 +7,11 @@ export interface UserModel {
   first_name?: string
   status?: string | undefined
   last_name?: string
-  fullname?: string
+  name?: string
   occupation?: string
   companyName?: string
-  phone?: string
+  phone?: string,
+  fullname?: String,
   role?: Array<number>
   pic?: string
   language?: 'en' | 'de' | 'es' | 'fr' | 'ja' | 'zh' | 'ru'

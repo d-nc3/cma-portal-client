@@ -3,13 +3,12 @@ import {UserModel} from './_models'
 import {getAuth} from '../../../../auth'
 const API_URL = process.env.REACT_APP_API_URL
 
-export const REGISTER_URL = `${API_URL}/api/users/register-user`
+export const REGISTER_URL = `${API_URL}/api/users/register`
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/api/users/refresh-token`
-export const GET_USER_URL = `${API_URL}/api/users/AllUsers  `
-export const EDIT_USERS_URL = `${API_URL}/api/users/updateUser`
-export const GET_USER_BY_ID = `${API_URL}/api/users/userById`
-export const DELETE_USER_URL = `${API_URL}/api/users/deleteUser`
-export const ADD_ROLE_TO_USER_URL = `${API_URL}/api/user-roles/create`
+export const GET_USER_URL = `${API_URL}/api/users/all  `
+export const EDIT_USERS_URL = `${API_URL}/api/users/update`
+export const GET_USER_BY_ID = `${API_URL}/api/users`
+export const DELETE_USER_URL = `${API_URL}/api/users/delete`
 
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
@@ -25,14 +24,14 @@ axios.interceptors.request.use(
   }
 )
 
-// Server should return AuthModel
+
 export function register(values: any) {
   return axios.post(REGISTER_URL, {
     email: values.email,
     fullname: values.name,
     password: values.password,
     roleId: values.roleId,
-    status: values.status,
+    status: values.status
   })
 }
 
@@ -81,9 +80,3 @@ export async function deleteUser(userId) {
   }
 }
 
-export function addRole(values: any) {
-  return axios.post(ADD_ROLE_TO_USER_URL, {
-    userId: values.id,
-    roleId: values.role,
-  })
-}

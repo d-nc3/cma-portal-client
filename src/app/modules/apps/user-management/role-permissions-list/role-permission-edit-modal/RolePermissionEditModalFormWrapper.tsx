@@ -39,7 +39,6 @@ const RolePermissionEditModalFormWrapper = () => {
     staleTime: 5 * 60 * 1000,
   })
 
-  console.log(roles)
   const {
     isLoading: isPermissionLoading,
     data: permissions,
@@ -49,7 +48,7 @@ const RolePermissionEditModalFormWrapper = () => {
     staleTime: 5 * 60 * 1000,
   })
 
-  console.log(permissions)
+
   if (!itemIdForUpdate) {
     return (
       <RolePermissionEditModalForm
