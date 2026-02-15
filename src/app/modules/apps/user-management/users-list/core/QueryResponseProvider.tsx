@@ -11,10 +11,10 @@ import {
   WithChildren,
 } from '../../../../../../_metronic/helpers'
 import {getUsers} from './_requests'
-import {User} from './_models'
+import {UserModel} from './_models'
 import {useQueryRequest} from './QueryRequestProvider'
 
-const QueryResponseContext = createResponseContext<User>(initialQueryResponse)
+const QueryResponseContext = createResponseContext<UserModel>(initialQueryResponse)
 const QueryResponseProvider: FC<WithChildren> = ({children}) => {
   const {state} = useQueryRequest()
   const [query, setQuery] = useState<string>(stringifyRequestQuery(state))
@@ -26,17 +26,17 @@ const QueryResponseProvider: FC<WithChildren> = ({children}) => {
     }
   }, [updatedQuery])
 
-  const {
-    isFetching,
-    refetch,
-    data: response,
-  } = useQuery(
-    `${QUERIES.USERS_LIST}-${query}`,
-    () => {
-      return getUsers(query)
-    },
-    {cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false}
-  )
+    const {
+      isFetching,
+      refetch,
+      data: response,
+    } = useQuery(
+      `${QUERIES.USERS_LIST}-${query}`,
+      () => {
+        return getUsers()
+      },
+      {cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false}
+    )
 
   return (
     <QueryResponseContext.Provider value={{isLoading: isFetching, refetch, response, query}}>
