@@ -69,7 +69,7 @@ const SidebarMenuMain = () => {
       )}
 
       {/* --- II. CAR MASTER & III. DISPATCHER --- */}
-      {hasRole(['dispatcher', 'admin']) && (
+      {hasRole(['dispatcher', 'Admin']) && (
         <>
           <div className='menu-item'>
             <div className='menu-content pt-8 pb-2'>
@@ -77,10 +77,10 @@ const SidebarMenuMain = () => {
             </div>
           </div>
           <SidebarMenuItemWithSub to='/apps/fleet' title='Car Master List' icon='bus' fontIcon='bi-truck'>
-            <SidebarMenuItem to='/apps/fleet/info' title='Vehicle Information' hasBullet={true} />
-            <SidebarMenuItem to='/apps/fleet/damages' title='Damage History' hasBullet={true} />
+            <SidebarMenuItem to='/apps/vehicle-management/vehicle-list' title='Vehicle Information' hasBullet={true} />
+            <SidebarMenuItem to='/apps/vehicle-management/damage-history' title='Damage History' hasBullet={true} />
             <SidebarMenuItem to='/apps/fleet/reports' title='Vehicle Reports' hasBullet={true} />
-          </SidebarMenuItemWithSub>
+          </SidebarMenuItemWithSub> 
 
           <SidebarMenuItemWithSub to='/apps/dispatch' title='Dispatcher' icon='delivery-2' fontIcon='bi-geo-alt'>
             <SidebarMenuItem to='/apps/dispatch/execution' title='Dispatch Execution' hasBullet={true} />
@@ -110,6 +110,22 @@ const SidebarMenuMain = () => {
         </>
       )}
 
+      {hasRole(['dispatcher', 'inventory', 'admin']) && (
+        <>
+          <div className='menu-item'>
+            <div className='menu-content pt-8 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Maintenance</span>
+            </div>
+          </div>
+          <SidebarMenuItemWithSub to='/apps/job-orders' title='Job Orders' icon='setting-2' fontIcon='bi-tools'>
+            <SidebarMenuItem to='/apps/job-orders/records' title='Master Record' hasBullet={true} />
+            <SidebarMenuItem to='/apps/job-orders/unit-info' title='Unit Info' hasBullet={true} />
+            <SidebarMenuItem to='/apps/job-orders/scope' title='Work Scope' hasBullet={true} />
+            <SidebarMenuItem to='/apps/job-orders/assignment' title='Personnel Assignment' hasBullet={true} />
+          </SidebarMenuItemWithSub>
+        </>
+      )}
+      
       {hasRole(['dispatcher', 'inventory', 'admin']) && (
         <>
           <div className='menu-item'>

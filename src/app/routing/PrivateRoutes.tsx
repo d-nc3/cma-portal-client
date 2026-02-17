@@ -20,6 +20,7 @@ const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
 const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
 const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
 const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
+const VehiclesPage = lazy(() => import('../modules/apps/vehicle-management/VehiclePage'))
 
 interface AppRoute {
   path: string
@@ -38,6 +39,9 @@ const routesConfig: AppRoute[] = [
   {path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true},
   {path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true},
   {path: 'crafted/pages/wizards/*', element: <WizardsPage />, isSuspensed: true},
+  {path: 'apps/vehicle-management/*', element: <VehiclesPage />, roles: ['admin', 'dispatcher'], isSuspensed: true},
+
+  
 ]
 
   return (
