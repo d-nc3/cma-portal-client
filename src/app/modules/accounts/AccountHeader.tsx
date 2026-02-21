@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { KTIcon, toAbsoluteUrl } from '../../../_metronic/helpers';
 import { Link, useLocation } from 'react-router-dom';
 import { Dropdown1 } from '../../../_metronic/partials';
+import { getAuth } from '../auth';
 
 interface Driver {
   id: string;
@@ -20,19 +21,8 @@ const AccountHeader: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const getCurrentDriver = async (): Promise<Driver> => {
-    // Get stored object from localStorage
-    const stored = localStorage.getItem("kt-auth-react-v");
-    if (!stored) throw new Error("No token found in localStorage");
-
-    // Parse JSON and extract token
-    let token: string;
-    try {
-      const parsed = JSON.parse(stored);
-      token = parsed.token;
-      if (!token) throw new Error("Token missing in stored object");
-    } catch {
-      throw new Error("Failed to parse token from localStorage");
-    }
+    const token = getAuth()?.api_token;
+    if (!token) throw new Error("No auth token found");
 
     // Fetch driver info from backend
     const response = await fetch("http://localhost:5000/api/drivers/me", {

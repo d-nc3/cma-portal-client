@@ -1,12 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { KTIcon } from '../../../../_metronic/helpers'
-import {
-  ChartsWidget1,
-  ListsWidget5,
-  TablesWidget1,
-  TablesWidget5,
-} from '../../../../_metronic/partials/widgets'
+import {getAuth} from '../../auth'
+import DriversDepositLedgerCard, { Transaction } from './settings/cards/LedgerCard'
+import DriversApprehensionCard from './settings/cards/ApprehensionsCard'
+import DriversContributionLedgerCard from './settings/cards/ContributionCard'
+
+// Sample transactions
+const transactions: Transaction[] = [
+  { date: '2023-06-15', type: 'Deposit', description: 'Initial deposit', amount: 500, balance: 500 },
+  { date: '2023-06-20', type: 'Charge', description: 'Car cleaning', amount: -50, balance: 450 },
+  { date: '2023-06-25', type: 'Charge', description: 'Late return', amount: -75, balance: 375 },
+  { date: '2023-07-01', type: 'Deposit', description: 'Additional deposit', amount: 200, balance: 575 },
+  { date: '2023-07-10', type: 'Charge', description: 'Damage repair', amount: -800, balance: -225 }
+]
+
+const sampleData = [
+  {
+    id: 1,
+    driverName: 'Errow Mirandilla',
+    violationType: 'Overspeeding',
+    ticketNumber: 'OVR-10231',
+    dateIssued: '2026-02-01',
+    expirationDate: '2026-02-28',
+    status: 'Active' as const,
+  },
+  {
+    id: 2,
+    driverName: 'Errow Mirandilla',
+    violationType: 'Reckless Driving',
+    ticketNumber: 'OVR-10255',
+    dateIssued: '2026-01-10',
+    expirationDate: '2026-01-25',
+    status: 'Cleared' as const,
+  },
+]
+
 
 interface Driver {
   fullname: string
@@ -24,24 +53,14 @@ interface Driver {
   licenseImageUrl?: string
 }
 
-export function Overview() {
+const Overview = () => {
   const [driver, setDriver] = useState<Driver | null>(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const getCurrentDriver = async (): Promise<Driver> => {
-    
-    const stored = localStorage.getItem("kt-auth-react-v");
-    if (!stored) throw new Error("No token found in localStorage");
-    
-    let token: string;
-    try {
-      const parsed = JSON.parse(stored);
-      token = parsed.token;
-      if (!token) throw new Error("Token missing in stored object");
-    } catch {
-      throw new Error("Failed to parse token from localStorage");
-    }
+    const token = getAuth()?.api_token
+    if (!token) throw new Error('No auth token found')
 
     // Fetch driver info from backend
     const response = await fetch("http://localhost:5000/api/drivers/me", {
@@ -182,21 +201,20 @@ export function Overview() {
 
       <div className='row gy-10 gx-xl-10'>
         <div className='col-xl-6'>
-          <ChartsWidget1 className='card-xxl-stretch mb-5 mb-xl-10' />
+          <DriversDepositLedgerCard transactions={transactions} />        
         </div>
         <div className='col-xl-6'>
-          <TablesWidget1 className='card-xxl-stretch mb-5 mb-xl-10' />
-        </div>
+          <DriversApprehensionCard apprehensions={sampleData} />   
+         </div>
       </div>
 
       <div className='row gy-10 gx-xl-10'>
-        <div className='col-xl-6'>  
-          <ListsWidget5 className='card-xxl-stretch mb-5 mb-xl-10' />
-        </div>
-        <div className='col-xl-6'>
-          <TablesWidget5 className='card-xxl-stretch mb-5 mb-xl-10' />
+        <div className='col-xl-14'>  
+          <DriversContributionLedgerCard />
         </div>
       </div>
     </>
   )
 }
+
+export default Overview;

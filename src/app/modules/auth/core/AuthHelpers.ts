@@ -2,6 +2,17 @@ import { AuthModel } from './_models';
 import { setCookie, getCookie, removeCookie } from '../../util/cookieHelper';
 
 const AUTH_COOKIE_KEY = 'kt-auth-react-v';
+const isSecureContext = typeof window !== 'undefined' && window.location.protocol === 'https:';
+
+const normalizeAuth = (auth?: Partial<AuthModel>): AuthModel | undefined => {
+  if (!auth) return undefined;
+  const resolvedToken = auth.api_token || auth.token;
+  return {
+    ...(auth as AuthModel),
+    api_token: resolvedToken || '',
+    token: resolvedToken,
+  };
+};
 
 const getAuth = (): AuthModel | undefined => {
   const cookieValue = getCookie(AUTH_COOKIE_KEY);
@@ -11,7 +22,7 @@ const getAuth = (): AuthModel | undefined => {
   }
 
   try {
-    const auth: AuthModel = JSON.parse(cookieValue) as AuthModel;
+    const auth = normalizeAuth(JSON.parse(cookieValue) as Partial<AuthModel>);
     if (auth) return auth;
   
   } catch (error) {
@@ -21,10 +32,13 @@ const getAuth = (): AuthModel | undefined => {
 
 const setAuth = (auth: AuthModel) => {
   try {
-    const cookieValue = JSON.stringify(auth);
+    const normalizedAuth = normalizeAuth(auth);
+    if (!normalizedAuth) return;
+
+    const cookieValue = JSON.stringify(normalizedAuth);
     setCookie(AUTH_COOKIE_KEY, cookieValue, {
       expires: 7, 
-      secure: true,
+      secure: isSecureContext,
       sameSite: 'strict',
       path: '/'
     });
@@ -41,13 +55,19 @@ const removeAuth = () => {
   }
 };
 
+const getAuthToken = (): string | undefined => {
+  const auth = getAuth();
+  return auth?.api_token || auth?.token;
+};
+
 export function setupAxios(axios: any) {
   axios.defaults.headers.Accept = 'application/json';
   axios.interceptors.request.use(
-    (config: { headers: { Authorization: string } }) => {
-      const auth = getAuth();
-      if (auth && auth.api_token) {
-        config.headers.Authorization = `Bearer ${auth.api_token}`;
+    (config: { headers?: { Authorization?: string } }) => {
+      config.headers = config.headers ?? {};
+      const token = getAuthToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
 
       return config;
@@ -56,4 +76,4 @@ export function setupAxios(axios: any) {
   );
 }
 
-export { getAuth, setAuth, removeAuth, AUTH_COOKIE_KEY };
+export { getAuth, getAuthToken, setAuth, removeAuth, AUTH_COOKIE_KEY };

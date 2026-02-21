@@ -3,6 +3,7 @@ import {useFormik} from 'formik'
 import * as Yup from 'yup'
 import {toAbsoluteUrl} from '../../../../../../_metronic/helpers'
 import {IProfileDetails, profileDetailsInitValues} from '../SettingsModel'
+import {getAuth} from '../../../../auth'
 
 const profileDetailsSchema = Yup.object().shape({
   fullname: Yup.string().required('Full name is required'),
@@ -29,7 +30,10 @@ const ProfileDetails: React.FC = () => {
     onSubmit: async (values) => {
       try {
         setLoading(true)
-        const token = JSON.parse(localStorage.getItem('kt-auth-react-v') || '{}')?.token
+        const token = getAuth()?.api_token
+        if (!token) {
+          throw new Error('No auth token found')
+        }
 
         const body = {
           ...values,
@@ -59,7 +63,10 @@ const ProfileDetails: React.FC = () => {
   // Load current driver profile
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = JSON.parse(localStorage.getItem('kt-auth-react-v') || '{}')?.token
+      const token = getAuth()?.api_token
+      if (!token) {
+        throw new Error('No auth token found')
+      }
       const res = await fetch('http://localhost:5000/api/drivers/me', {
         headers: {Authorization: `Bearer ${token}`},
       })
