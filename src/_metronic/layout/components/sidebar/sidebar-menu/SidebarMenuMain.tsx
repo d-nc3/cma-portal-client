@@ -31,7 +31,7 @@ const SidebarMenuMain = () => {
           <SidebarMenuItem to='/apps/drivers/my-charges' title='My Charges' icon='Price-tag' />
         </>
       )}
-
+      
       {hasRole(['dispatcher', 'admin']) && (
         <>
           <div className='menu-item'>

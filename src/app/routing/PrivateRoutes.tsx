@@ -35,6 +35,9 @@ const UsersPage = lazy(() =>
 const Overview = lazy(() =>
   import('../modules/profile/components/Overview').then(module => ({ default: module.Overview }))
 );
+const LedgerPage = lazy(() =>
+  import('../pages/ledger/LedgerPage').then(module => ({ default: module.default }))
+);
 
 interface AppRoute {
   path: string
@@ -54,6 +57,12 @@ const routesConfig: AppRoute[] = [
   { path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true },
   { path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true },
   { path: 'crafted/pages/wizards/*', element: <WizardsPage />, isSuspensed: true },
+  { 
+    path: 'apps/drivers/my-ledger', 
+    element: <LedgerPage />, 
+    roles: ['driver'],   // only drivers can access
+    isSuspensed: true 
+  },
 ]
 
   return (
