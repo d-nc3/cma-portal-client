@@ -9,7 +9,12 @@ const profileDetailsSchema = Yup.object().shape({
   callSign: Yup.string().required('Call sign is required'),
   address: Yup.string().required('Address is required'),
   contactNumber: Yup.string().required('Contact number is required'),
+  spouseName: Yup.string().required('Spouse name is required'),
+  spouseContact: Yup.string().required('Spouse contact is required'),
   carAssignment: Yup.string().required('Car assignment is required'),
+  sssNumber: Yup.string().required('SSS number is required'),
+  philhealthNumber: Yup.string().required('Philhealth number is required'),
+  pagibigNumber: Yup.string().required('Pagibig number is required'),
   licenseNumber: Yup.string().required('License number is required'),
   licenseExpiry: Yup.string().required('License expiry is required'),
 })
@@ -26,13 +31,18 @@ const ProfileDetails: React.FC = () => {
         setLoading(true)
         const token = JSON.parse(localStorage.getItem('kt-auth-react-v') || '{}')?.token
 
-        await fetch('http://localhost:5000/api/drivers/driver/me', {
+        const body = {
+          ...values,
+          licenseExpiry: new Date(values.licenseExpiry).toISOString()
+        }
+
+        await fetch('http://localhost:5000/api/drivers/me/update', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(body),
         })
 
         setData(values)
@@ -50,13 +60,13 @@ const ProfileDetails: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const token = JSON.parse(localStorage.getItem('kt-auth-react-v') || '{}')?.token
-      const res = await fetch('http://localhost:5000/api/drivers/driver/me', {
+      const res = await fetch('http://localhost:5000/api/drivers/me', {
         headers: {Authorization: `Bearer ${token}`},
       })
       const data = await res.json()
       setData(data)
       formik.setValues(data)
-    }
+    };
 
     fetchProfile()
   }, [])
@@ -94,10 +104,40 @@ const ProfileDetails: React.FC = () => {
             <input className='form-control' {...formik.getFieldProps('contactNumber')} />
           </div>
 
+          {/* Spouse Name */}
+          <div className='mb-5'>
+            <label className='form-label required'>Spouse Name</label>
+            <input className='form-control' {...formik.getFieldProps('spouseName')} />
+          </div>
+
+          {/* Spouse Contact Number */}
+          <div className='mb-5'>
+            <label className='form-label required'>Spouse Contact Number</label>
+            <input className='form-control' {...formik.getFieldProps('spouseContact')} />
+          </div>
+
           {/* Car Assignment */}
           <div className='mb-5'>
             <label className='form-label required'>Car Assignment</label>
             <input className='form-control' {...formik.getFieldProps('carAssignment')} />
+          </div>
+
+          {/* SSS Number */}
+          <div className='mb-5'>
+            <label className='form-label required'>SSS Number</label>
+            <input className='form-control' {...formik.getFieldProps('sssNumber')} />
+          </div>
+
+          {/* Philhealth Number */}
+          <div className='mb-5'>
+            <label className='form-label required'>Philhealth Number</label>
+            <input className='form-control' {...formik.getFieldProps('philhealthNumber')} />
+          </div>
+
+          {/* Pagibig Number */}
+          <div className='mb-5'>
+            <label className='form-label required'>Pagibig Number</label>
+            <input className='form-control' {...formik.getFieldProps('pagibigNumber')} />
           </div>
 
           {/* License Number */}

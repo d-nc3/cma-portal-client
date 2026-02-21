@@ -35,7 +35,7 @@ const AccountHeader: React.FC = () => {
     }
 
     // Fetch driver info from backend
-    const response = await fetch("http://localhost:5000/api/drivers/driver/me", {
+    const response = await fetch("http://localhost:5000/api/drivers/me", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

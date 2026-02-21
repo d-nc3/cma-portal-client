@@ -30,11 +30,10 @@ export function Overview() {
   const [error, setError] = useState<string | null>(null);
 
   const getCurrentDriver = async (): Promise<Driver> => {
-    // Get stored object from localStorage
+    
     const stored = localStorage.getItem("kt-auth-react-v");
     if (!stored) throw new Error("No token found in localStorage");
-
-    // Parse JSON and extract token
+    
     let token: string;
     try {
       const parsed = JSON.parse(stored);
@@ -45,7 +44,7 @@ export function Overview() {
     }
 
     // Fetch driver info from backend
-    const response = await fetch("http://localhost:5000/api/drivers/driver/me", {
+    const response = await fetch("http://localhost:5000/api/drivers/me", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -145,6 +144,27 @@ export function Overview() {
           </div>
 
           <div className='row mb-7'>
+            <label className='col-lg-4 fw-bold text-muted'>SSS Number</label>
+            <div className='col-lg-8'>
+              <span className='fw-bolder fs-6'>{driver.sssNumber}</span>
+            </div>
+          </div>
+
+          <div className='row mb-7'>
+            <label className='col-lg-4 fw-bold text-muted'>Philhealth Number</label>
+            <div className='col-lg-8'>
+              <span className='fw-bolder fs-6'>{driver.philhealthNumber}</span>
+            </div>
+          </div>
+
+          <div className='row mb-7'>
+            <label className='col-lg-4 fw-bold text-muted'>Pagibig Number</label>
+            <div className='col-lg-8'>
+              <span className='fw-bolder fs-6'>{driver.pagibigNumber}</span>
+            </div>
+          </div>
+
+          <div className='row mb-7'>
             <label className='col-lg-4 fw-bold text-muted'>License Number</label>
             <div className='col-lg-8'>
               <span className='fw-bolder fs-6'>{driver.licenseNumber}</span>
@@ -170,7 +190,7 @@ export function Overview() {
       </div>
 
       <div className='row gy-10 gx-xl-10'>
-        <div className='col-xl-6'>
+        <div className='col-xl-6'>  
           <ListsWidget5 className='card-xxl-stretch mb-5 mb-xl-10' />
         </div>
         <div className='col-xl-6'>
