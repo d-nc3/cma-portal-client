@@ -26,12 +26,12 @@ const SidebarMenuMain = () => {
               <span className='menu-section text-muted text-uppercase fs-8 ls-1'>My Information</span>
             </div>
           </div>
-          <SidebarMenuItem to='/apps/drivers/my-info' title='My Personal Data' icon='user' />
+          <SidebarMenuItem to='/apps/drivers/overview' title='My Personal Data' icon='user' />
           <SidebarMenuItem to='/apps/drivers/my-ledger' title='My Deposit Ledger' icon='wallet' />
           <SidebarMenuItem to='/apps/drivers/my-charges' title='My Charges' icon='Price-tag' />
         </>
       )}
-
+      
       {hasRole(['dispatcher', 'admin']) && (
         <>
           <div className='menu-item'>

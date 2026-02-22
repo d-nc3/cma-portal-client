@@ -14,12 +14,30 @@ import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
 const PrivateRoutes = () => {
   const {currentUser, hasRole} = useAuth()
 // 1. Externalize Lazy Imports
-const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
-const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
-const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
-const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
-const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
-const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
+const ProfilePage = lazy(() =>
+  import('../modules/profile/ProfilePage').then(module => ({ default: module.default }))
+);
+const WizardsPage = lazy(() =>
+  import('../modules/wizards/WizardsPage').then(module => ({ default: module.default }))
+);
+const AccountPage = lazy(() =>
+  import('../modules/accounts/AccountPage').then(module => ({ default: module.default }))
+);
+const WidgetsPage = lazy(() =>
+  import('../modules/widgets/WidgetsPage').then(module => ({ default: module.default }))
+);
+const ChatPage = lazy(() =>
+  import('../modules/apps/chat/ChatPage').then(module => ({ default: module.default }))
+);
+const UsersPage = lazy(() =>
+  import('../modules/apps/user-management/UsersPage').then(module => ({ default: module.default }))
+);
+const Overview = lazy(() =>
+  import('../modules/profile/components/Overview').then(module => ({ default: module.Overview }))
+);
+const LedgerPage = lazy(() =>
+  import('../pages/ledger/LedgerPage').then(module => ({ default: module.default }))
+);
 
 interface AppRoute {
   path: string
@@ -29,15 +47,22 @@ interface AppRoute {
 }
 
 const routesConfig: AppRoute[] = [
-  {path: 'dashboard', element: <DashboardWrapper />},
-  {path: 'builder', element: <BuilderPageWrapper />, roles: ['admin']},
-  {path: 'menu-test', element: <MenuTestPage />, roles: ['admin']},
-  {path: 'apps/user-management/*', element: <UsersPage />, roles: ['admin'], isSuspensed: true},
-  {path: 'crafted/pages/profile/*', element: <ProfilePage />, roles: ['admin', 'dispatcher'], isSuspensed: true},
-  {path: 'apps/chat/*', element: <ChatPage />, roles: ['admin', 'driver'], isSuspensed: true},
-  {path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true},
-  {path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true},
-  {path: 'crafted/pages/wizards/*', element: <WizardsPage />, isSuspensed: true},
+  { path: 'dashboard', element: <DashboardWrapper /> },
+  { path: 'builder', element: <BuilderPageWrapper />, roles: ['admin'] },
+  { path: 'menu-test', element: <MenuTestPage />, roles: ['admin'] },
+  { path: 'apps/user-management/*', element: <UsersPage />, roles: ['admin'], isSuspensed: true },
+  { path: 'crafted/pages/profile/*', element: <ProfilePage />, roles: ['admin', 'dispatcher'], isSuspensed: true },
+  { path: 'apps/drivers/overview', element: <Overview />, roles: ['driver'], isSuspensed: true },
+  { path: 'apps/chat/*', element: <ChatPage />, roles: ['admin', 'driver'], isSuspensed: true },
+  { path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true },
+  { path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true },
+  { path: 'crafted/pages/wizards/*', element: <WizardsPage />, isSuspensed: true },
+  { 
+    path: 'apps/drivers/my-ledger', 
+    element: <LedgerPage />, 
+    roles: ['driver'],   // only drivers can access
+    isSuspensed: true 
+  },
 ]
 
   return (
