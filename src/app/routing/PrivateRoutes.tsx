@@ -38,6 +38,9 @@ const Overview = lazy(() =>
 const LedgerPage = lazy(() =>
   import('../pages/ledger/LedgerPage').then(module => ({ default: module.default }))
 );
+const ApprehensionPage = lazy(() =>
+  import('../pages/apprehension/ApprehensionPage').then(module => ({ default: module.default }))
+);
 
 interface AppRoute {
   path: string
@@ -63,6 +66,13 @@ const routesConfig: AppRoute[] = [
     roles: ['driver'],   // only drivers can access
     isSuspensed: true 
   },
+  { 
+    path: 'apps/drivers/my-apprehensions', 
+    element: <ApprehensionPage />, 
+    roles: ['driver'],   // only drivers can access
+    isSuspensed: true 
+  },
+
 ]
 
   return (

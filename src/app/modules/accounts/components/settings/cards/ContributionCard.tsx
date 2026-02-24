@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { KTIcon } from '../../../../../../_metronic/helpers'
 
-/* ============================= */
-/* ===== TYPES ================= */
-/* ============================= */
-
 type LedgerStatus = 'posted' | 'remitted' | 'pending'
 type LedgerType = 'sss' | 'philhealth' | 'pagibig'
 

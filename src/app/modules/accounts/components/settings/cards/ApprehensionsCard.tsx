@@ -2,13 +2,11 @@ import React, { useMemo } from 'react'
 import { KTIcon } from '../../../../../../_metronic/helpers'
 
 export interface DriverApprehension {
-  id: number
+  driverId: number
   driverName: string
   violationType: string
-  ticketNumber: string
-  dateIssued: string
-  expirationDate: string
-  status: 'Active' | 'Expired' | 'Cleared'
+  ticketExpiry: string
+  status: 'Active' | 'Settled'
 }
 
 interface DriversApprehensionCardProps {
@@ -25,8 +23,8 @@ const DriversApprehensionCard: React.FC<DriversApprehensionCardProps> = ({
     [apprehensions]
   )
 
-  const expiredCount = useMemo(
-    () => apprehensions.filter(a => a.status === 'Cleared').length,
+  const settledCount = useMemo(
+    () => apprehensions.filter(a => a.status === 'Settled').length,
     [apprehensions]
   )
 
@@ -66,21 +64,19 @@ const DriversApprehensionCard: React.FC<DriversApprehensionCardProps> = ({
 
           <div className='col'>
             <div className='border rounded p-3 text-center'>
-              <div className='fs-4 fw-bold text-danger'>{expiredCount}</div>
-              <div className='text-muted fs-7'>Expired</div>
+              <div className='fs-4 fw-bold text-danger'>{settledCount}</div>
+              <div className='text-muted fs-7'>Settled</div>
             </div>
           </div>
         </div>
 
         <div className='table-responsive'>
-          <table className='table table-row-bordered align-middle'>
+          <table className='table table-row-bordered align-middle table-fixed w-100'>
             <thead>
               <tr className='fw-bold text-muted'>
                 <th>Driver</th>
                 <th>Violation</th>
-                <th>Ticket #</th>
-                <th>Issued</th>
-                <th>Expiration</th>
+                <th>Ticket Expiry</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -94,19 +90,17 @@ const DriversApprehensionCard: React.FC<DriversApprehensionCardProps> = ({
               )}
 
               {apprehensions.map(item => (
-                <tr key={item.id}>
+                <tr key={item.driverId}>
                   <td className='fw-semibold'>{item.driverName}</td>
                   <td>{item.violationType}</td>
-                  <td>{item.ticketNumber}</td>
-                  <td>{item.dateIssued}</td>
-                  <td>{item.expirationDate}</td>
+                  <td>{item.ticketExpiry}</td>
                   <td>
                     <span
                       className={`badge ${
                         item.status === 'Active'
                           ? 'badge-light-success'
-                          : item.status === 'Expired'
-                          ? 'badge-light-danger'
+                          : item.status === 'Settled'
+                          ? 'badge-light-warning'
                           : 'badge-light-primary'
                       }`}
                     >
