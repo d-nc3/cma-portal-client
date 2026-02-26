@@ -41,7 +41,6 @@ export async function getPermissions() {
 export const getPermissionById = async (roleId) => {
   try {
     const response = await axios.get(`${GET_PERMISSION_BY_ID_URL}/${roleId}`, {
-      withCredentials: true, // optional, if your API requires cookies
     })
     return response.data
   } catch (error) {

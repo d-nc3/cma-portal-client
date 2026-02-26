@@ -4,6 +4,7 @@ import {VehicleTable} from './vehicle-list/VehicleTable'
 import {AddVehicleForm} from './vehicle-list/AddVehicleForm' // Import your form
 import { DamageHistoryTable } from './damage-history/DamageHistoryTable'
 import { VehicleOverview } from './overview/VehicleOverview'
+import { AddVehicleDamageForm } from  './overview/AddVehicleDamageForm'
 
 // Base breadcrumb for the module
 const vehicleBreadcrumbs: Array<PageLink> = [
@@ -64,6 +65,15 @@ const VehiclesPage = () => {
             <>
               <PageTitle breadcrumbs={vehicleBreadcrumbs}>Vehicle Information</PageTitle>
               <VehicleOverview />
+            </>
+          }
+        />
+          <Route
+          path='overview/add'
+          element={
+            <>
+              <PageTitle breadcrumbs={vehicleBreadcrumbs}>Vehicle Damage Form</PageTitle>
+              <AddVehicleDamageForm />
             </>
           }
         />

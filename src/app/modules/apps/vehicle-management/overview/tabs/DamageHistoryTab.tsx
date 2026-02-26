@@ -1,5 +1,6 @@
 import {FC} from 'react'
 import {KTCard, KTCardBody, KTIcon} from '../../../../../../_metronic/helpers'
+import {Link, useLocation, useParams} from 'react-router-dom'
 
 const DamageHistoryTab: FC = () => {
   // This would eventually come from your API
@@ -32,10 +33,11 @@ const DamageHistoryTab: FC = () => {
           <span className='text-muted mt-1 fw-semibold fs-7'>Historical record of unit physical condition</span>
         </h3>
         <div className='card-toolbar'>
-          <button type='button' className='btn btn-sm btn-light-danger'>
-            <KTIcon iconName='plus' className='fs-2' />
-            Report New Damage
-          </button>
+       
+           <Link to='/apps/vehicle-management/overview/add' className='btn btn-light-danger'>
+                        <KTIcon iconName='plus' className='fs-2' />
+                         Report New Damage
+                      </Link>
         </div>
       </div>
 

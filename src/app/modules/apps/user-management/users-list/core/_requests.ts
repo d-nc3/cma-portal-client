@@ -11,18 +11,6 @@ export const GET_USER_BY_ID = `${API_URL}/api/users`
 export const DELETE_USER_URL = `${API_URL}/api/users/delete`
 
 axios.defaults.withCredentials = true
-axios.interceptors.request.use(
-  (config) => {
-    const auth = getAuth()
-    if (auth && auth.token) {
-      config.headers.Authorization = `Bearer ${auth.token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
 
 
 export function register(values: any) {

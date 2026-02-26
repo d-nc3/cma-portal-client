@@ -15,7 +15,6 @@ const VehicleTable = ({data}: {data: any[]}) => {
 
   return (
     <KTCard>
-      {/* begin::Header */}
       <div className='card-header border-0 pt-6'>
         <div className='card-title'>
           {/* begin::Search */}
@@ -35,19 +34,13 @@ const VehicleTable = ({data}: {data: any[]}) => {
               <KTIcon iconName='filter' className='fs-2' />
               Filter
             </button>
-            {/* end::Filter */}
-
-            {/* begin::Add Vehicle */}
             <Link to='/apps/vehicle-management/add' className='btn btn-primary'>
               <KTIcon iconName='plus' className='fs-2' />
               Add Vehicle
             </Link>
-
-            {/* end::Add Vehicle */}
           </div>
         </div>
       </div>
-      {/* end::Header */}
 
       <KTCardBody className='py-4'>
         <div className='table-responsive'>
