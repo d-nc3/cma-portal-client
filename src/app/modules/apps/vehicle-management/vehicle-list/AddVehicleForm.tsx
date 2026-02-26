@@ -1,19 +1,20 @@
-import axios from 'axios';
-import {FC, useState,useEffect} from 'react'
+import {FC} from 'react'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import clsx from 'clsx'
 import {KTIcon, KTCard, KTCardBody} from '../../../../../_metronic/helpers'
-import {registerVehicle,getDrivers} from '../core/_requests'
+import {registerVehicle} from '../core/_requests'
 import {VehicleModel} from '../core/_models'
 
 const vehicleSchema = Yup.object().shape({
   unitName: Yup.string().required('Unit name is required'),
   plateNumber: Yup.string().required('Plate number is required'),
   brand: Yup.string().required('Brand is required'),
+  yearModel: Yup.number().required('Year model is required'),
   boundaryRate: Yup.number().min(1, 'Rate must be greater than 0').required('Rate is required'),
   registrationDueDate: Yup.date().required('Registration due date is required'),
   codingDay: Yup.string().required('Coding day is required'),
+  fleetInclusion: Yup.number().required('Fleet selection is required'),
 })
 
 const initialValues: VehicleModel = {
@@ -26,7 +27,6 @@ const initialValues: VehicleModel = {
   engineNumber: '',
   mvFileNumber: '',
   ltfrbCaseNumber: '',
-  driverId:0,
   fleetInclusion: 0,
   codingDay: '',
   serviceDaySchedule: '',
@@ -38,21 +38,7 @@ const initialValues: VehicleModel = {
   cpcValidityExpiration: '',
 }
 
-
-
 const AddVehicleForm: FC = () => {
-
-   const [drivers, setDrivers] = useState<{ id: number; name: string }[]>([])
-
-  useEffect(() => {
-    getDrivers()
-      .then((res) => {
-        setDrivers(res.data) 
-      })
-      .catch((err) => {
-        console.error("Failed to fetch drivers:", err)
-      })
-  }, [])
   const formik = useFormik({
     initialValues,
     validationSchema: vehicleSchema,
@@ -61,6 +47,7 @@ const AddVehicleForm: FC = () => {
       try {
         await registerVehicle(values)
         resetForm()
+        // Suggestion: Add a success toast here
       } catch (error) {
         console.error(error)
       } finally {
@@ -90,14 +77,15 @@ const AddVehicleForm: FC = () => {
       <KTCardBody className='py-4'>
         <form onSubmit={formik.handleSubmit} noValidate className='form'>
           <div className='d-flex flex-column scroll-y me-n7 pe-7' style={{maxHeight: '65vh'}}>
-            {/* --- Identity --- */}
+            
+            {/* --- Section 1: Identity --- */}
             <div className='mb-10 mt-5'>
               <div className='d-flex align-items-center mb-5'>
                 <span className='bullet bullet-vertical h-40px bg-primary me-5'></span>
                 <h3 className='fw-bolder m-0 text-gray-800'>Vehicle Identity</h3>
               </div>
               <div className='row g-6'>
-                <div className='col-md-4 fv-row'>
+                <div className='col-md-3 fv-row'>
                   <label className='required fs-7 fw-bold mb-2'>Unit Name</label>
                   <input
                     {...formik.getFieldProps('unitName')}
@@ -106,7 +94,7 @@ const AddVehicleForm: FC = () => {
                     })}
                   />
                 </div>
-                <div className='col-md-4 fv-row'>
+                <div className='col-md-3 fv-row'>
                   <label className='required fs-7 fw-bold mb-2'>Plate Number</label>
                   <input
                     {...formik.getFieldProps('plateNumber')}
@@ -115,7 +103,7 @@ const AddVehicleForm: FC = () => {
                     })}
                   />
                 </div>
-                <div className='col-md-4 fv-row'>
+                <div className='col-md-3 fv-row'>
                   <label className='required fs-7 fw-bold mb-2'>Brand</label>
                   <input
                     {...formik.getFieldProps('brand')}
@@ -124,147 +112,97 @@ const AddVehicleForm: FC = () => {
                     })}
                   />
                 </div>
+                <div className='col-md-3 fv-row'>
+                  <label className='required fs-7 fw-bold mb-2'>Year Model</label>
+                  <input
+                    type="number"
+                    {...formik.getFieldProps('yearModel')}
+                    className={clsx('form-control form-control-solid', {
+                      'is-invalid': formik.touched.yearModel && formik.errors.yearModel,
+                    })}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* --- Technical --- */}
+            {/* --- Section 2: Technical & LTFRB --- */}
             <div className='mb-10 bg-light-info rounded p-8 border border-info border-dashed'>
-              <h3 className='fw-bolder mb-5 text-info'>Technical Specifications</h3>
+              <h3 className='fw-bolder mb-5 text-info'>Technical & Franchise Specs</h3>
               <div className='row g-4'>
                 <div className='col-md-3'>
                   <label className='fs-8 fw-bolder text-uppercase text-muted'>Chassis No.</label>
-                  <input
-                    {...formik.getFieldProps('chassisNumber')}
-                    className='form-control form-control-sm form-control-solid bg-white'
-                  />
+                  <input {...formik.getFieldProps('chassisNumber')} className='form-control form-control-sm form-control-solid bg-white' />
                 </div>
                 <div className='col-md-3'>
                   <label className='fs-8 fw-bolder text-uppercase text-muted'>Car No.</label>
-                  <input
-                    {...formik.getFieldProps('carNumber')}
-                    className='form-control form-control-sm form-control-solid bg-white'
-                  />
+                  <input {...formik.getFieldProps('carNumber')} className='form-control form-control-sm form-control-solid bg-white' />
                 </div>
                 <div className='col-md-3'>
                   <label className='fs-8 fw-bolder text-uppercase text-muted'>Engine No.</label>
-                  <input
-                    {...formik.getFieldProps('engineNumber')}
-                    className='form-control form-control-sm form-control-solid bg-white'
-                  />
+                  <input {...formik.getFieldProps('engineNumber')} className='form-control form-control-sm form-control-solid bg-white' />
                 </div>
                 <div className='col-md-3'>
                   <label className='fs-8 fw-bolder text-uppercase text-muted'>MV File No.</label>
-                  <input
-                    {...formik.getFieldProps('mvFileNumber')}
-                    className='form-control form-control-sm form-control-solid bg-white'
-                  />
+                  <input {...formik.getFieldProps('mvFileNumber')} className='form-control form-control-sm form-control-solid bg-white' />
+                </div>
+                <div className='col-md-12 mt-4'>
+                  <label className='fs-8 fw-bolder text-uppercase text-muted'>LTFRB Case Number</label>
+                  <input {...formik.getFieldProps('ltfrbCaseNumber')} className='form-control form-control-sm form-control-solid bg-white' placeholder="Enter LTFRB Case #" />
                 </div>
               </div>
             </div>
 
-            {/* --- Boundary --- */}
-            <div className='mb-10'>
-              <h3 className='fw-bolder mb-5'>Boundary & Rate</h3>
-              <div className='row g-9 align-items-end'>
-                <div className='col-md-6'>
-                  <label className='required fs-7 fw-bold mb-3'>Classification</label>
-                  <div className='nav-group nav-group-outline d-inline-flex'>
-                    <button
-                      type='button'
-                      onClick={() => formik.setFieldValue('boundaryClassification', 'DAILY')}
-                      className={clsx(
-                        'btn btn-color-gray-400 btn-active btn-active-secondary px-6 py-3 fw-bold',
-                        {active: formik.values.boundaryClassification === 'DAILY'}
-                      )}
-                    >
-                      Daily
-                    </button>
-                    <button
-                      type='button'
-                      onClick={() =>
-                        formik.setFieldValue('boundaryClassification', 'TWENTY_FOUR_HOURS')
-                      }
-                      className={clsx(
-                        'btn btn-color-gray-400 btn-active btn-active-secondary px-6 py-3 fw-bold',
-                        {active: formik.values.boundaryClassification === 'TWENTY_FOUR_HOURS'}
-                      )}
-                    >
-                      24 Hours
-                    </button>
-                  </div>
-                </div>
-                <div className='col-md-6'>
-                  <label className='required fs-7 fw-bold mb-2'>Daily Rate (₱)</label>
-                  <input
-                    type='number'
-                    {...formik.getFieldProps('boundaryRate')}
-                    className='form-control form-control-lg form-control-solid'
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* --- SECTION 3: Fleet & Boundary --- */}
+            {/* --- Section 3: Fleet & Boundary Strategy --- */}
             <div className='mb-10'>
               <div className='d-flex align-items-center mb-5'>
                 <span className='bullet bullet-vertical h-40px bg-success me-5'></span>
                 <h3 className='fw-bolder m-0 text-gray-800'>Fleet & Boundary</h3>
               </div>
+              <div className='row g-6'>
+                <div className='col-md-4 fv-row'>
+                  <label className='required fs-7 fw-bold mb-2'>Fleet Category</label>
+                  <select
+                    {...formik.getFieldProps('fleetInclusion')}
+                    onChange={(e) => formik.setFieldValue('fleetInclusion', Number(e.target.value))}
+                    className='form-select form-select-solid'
+                  >
+                    <option value={0}>General Fleet</option>
+                    <option value={1}>Grab/TNVS Fleet</option>
+                    <option value={2}>Taxi Fleet</option>
+                    <option value={3}>Logistics/Delivery</option>
+                  </select>
+                </div>
 
-             <div className='col-md-4 fv-row'>
-  <label className='required fs-7 fw-bold mb-2'>Driver Assignment</label>
+                <div className='col-md-4 fv-row'>
+                  <label className='required fs-7 fw-bold mb-2'>Classification</label>
+                  <select {...formik.getFieldProps('boundaryClassification')} className='form-select form-select-solid'>
+                    <option value="DAILY">Daily</option>
+                    <option value="TWENTY_FOUR_HOURS">24 Hours</option>
+                  </select>
+                </div>
 
-  <select
-    {...formik.getFieldProps('driverId')}
-    className={clsx('form-select form-select-solid', {
-      'is-invalid': formik.touched.driverId && formik.errors.driverId,
-    })}
-  >
-    <option value={0}>Select Driver</option>
-
-    {drivers.map((driver) => (
-      <option key={driver.id} value={driver.id}>
-        {driver.name}
-      </option>
-    ))}
-  </select>
-
-  {formik.touched.driverId && formik.errors.driverId && (
-    <div className='fv-plugins-message-container'>
-      <div className='fv-help-block'>{formik.errors.driverId}</div>
-    </div>
-  )}
-</div>
-
-              
+                <div className='col-md-4 fv-row'>
+                  <label className='required fs-7 fw-bold mb-2'>Daily Rate (₱)</label>
+                  <input type='number' {...formik.getFieldProps('boundaryRate')} className='form-control form-control-solid' />
+                </div>
+              </div>
             </div>
 
-            {/* --- Compliance --- */}
+            {/* --- Section 4: Compliance --- */}
             <div className='mb-10'>
               <h3 className='fw-bolder mb-5 text-gray-800'>Compliance Deadlines</h3>
               <div className='row g-6'>
                 <div className='col-md-4'>
                   <label className='fs-8 fw-bold text-muted'>Registration Due</label>
-                  <input
-                    type='date'
-                    {...formik.getFieldProps('registrationDueDate')}
-                    className='form-control form-control-solid border-danger border-dashed'
-                  />
+                  <input type='date' {...formik.getFieldProps('registrationDueDate')} className='form-control form-control-solid border-danger border-dashed' />
                 </div>
                 <div className='col-md-4'>
                   <label className='fs-8 fw-bold text-muted'>CPC Expiration</label>
-                  <input
-                    type='date'
-                    {...formik.getFieldProps('cpcValidityExpiration')}
-                    className='form-control form-control-solid'
-                  />
+                  <input type='date' {...formik.getFieldProps('cpcValidityExpiration')} className='form-control form-control-solid' />
                 </div>
                 <div className='col-md-4'>
                   <label className='fs-8 fw-bold text-muted'>Coding Day</label>
-                  <select
-                    {...formik.getFieldProps('codingDay')}
-                    className='form-select form-select-solid'
-                  >
+                  <select {...formik.getFieldProps('codingDay')} className='form-select form-select-solid'>
                     <option value=''>Select Day</option>
                     <option value='Monday'>Monday</option>
                     <option value='Tuesday'>Tuesday</option>
@@ -273,56 +211,33 @@ const AddVehicleForm: FC = () => {
                     <option value='Friday'>Friday</option>
                   </select>
                 </div>
-                 <div className='col-md-4'>
-                  <label className='fs-8 fw-bold text-muted'>Service Day Schedule</label>
-                   <input
-                    type='date'
-                    {...formik.getFieldProps('serviceDaySchedule')}
-                    className='form-control form-control-solid'
-                  />
+                <div className='col-md-4'>
+                  <label className='fs-8 fw-bold text-muted'>Service Day</label>
+                  <input type='date' {...formik.getFieldProps('serviceDaySchedule')} className='form-control form-control-solid' />
+                </div>
+                <div className='col-md-4'>
+                  <label className='fs-8 fw-bold text-muted'>Insurance Expiry</label>
+                  <input type='date' {...formik.getFieldProps('insuranceExpiration')} className='form-control form-control-solid' />
                 </div>
                 <div className='col-md-4'>
                   <label className='fs-8 fw-bold text-muted'>Date Registered</label>
-                   <input
-                    type='date'
-                    {...formik.getFieldProps('dateRegistered')}
-                    className='form-control form-control-solid'
-                  />
-                </div>
-                 <div className='col-md-4'>
-                  <label className='fs-8 fw-bold text-muted'>Insurance Expiration</label>
-                   <input
-                    type='date'
-                    {...formik.getFieldProps('insuranceExpiration')}
-                    className='form-control form-control-solid'
-                  />
+                  <input type='date' {...formik.getFieldProps('dateRegistered')} className='form-control form-control-solid' />
                 </div>
               </div>
             </div>
           </div>
 
+          {/* --- Footer --- */}
           <div className='card-footer d-flex justify-content-end py-6 px-0 bg-transparent border-top-1'>
-            <button
-              type='reset'
-              className='btn btn-light me-3'
-              onClick={() => formik.resetForm()}
-              disabled={formik.isSubmitting}
-            >
+            <button type='reset' className='btn btn-light me-3' onClick={() => formik.resetForm()} disabled={formik.isSubmitting}>
               Discard
             </button>
-            <button
-              type='submit'
-              className='btn btn-primary'
-              disabled={formik.isSubmitting || !formik.isValid}
-            >
+            <button type='submit' className='btn btn-primary' disabled={formik.isSubmitting || !formik.isValid}>
               {!formik.isSubmitting ? (
-                <span>
-                  <KTIcon iconName='cloud-change' className='fs-3 me-1' /> Save Vehicle
-                </span>
+                <span><KTIcon iconName='cloud-change' className='fs-3 me-1' /> Save Vehicle</span>
               ) : (
                 <span className='indicator-progress' style={{display: 'block'}}>
-                  Saving...{' '}
-                  <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                  Saving... <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
                 </span>
               )}
             </button>

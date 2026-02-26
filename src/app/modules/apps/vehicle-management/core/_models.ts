@@ -8,7 +8,6 @@ export interface VehicleModel {
   chassisNumber?: string
   carNumber?: string
   engineNumber?: string
-  driverId?: number
   mvFileNumber?: string
   ltfrbCaseNumber?: string
   fleetInclusion?: number

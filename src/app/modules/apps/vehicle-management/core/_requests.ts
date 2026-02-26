@@ -12,23 +12,16 @@ export const GET_DRIVERS_URL = `${API_URL}/api/drivers/getDrivers`
 
 axios.defaults.withCredentials = true
 
-export function registerVehicle(values: VehicleModel) {
-  return axios.post(REGISTER_URL, values, {
-    withCredentials: true
-  })
-}
+axios.defaults.withCredentials = true
 
-
-export async function getDrivers() {
+export const registerVehicle = async (values: VehicleModel) => {
   try {
-    const response = await axios.get(GET_DRIVERS_URL, {
-      withCredentials: true,
-    })
-    console.log('Drivers response:', response.data)
-
-    return response.data
+    const response = await axios.post(REGISTER_URL, values);
+    return response.data;
   } catch (error: any) {
-    console.error('Error fetching drivers:', error.response?.data || error)
-    throw error
+    // Extract backend error message accurately
+    const errorMessage = error.response?.data?.message || "Internal Server Error";
+    throw new Error(errorMessage);
   }
 }
+
