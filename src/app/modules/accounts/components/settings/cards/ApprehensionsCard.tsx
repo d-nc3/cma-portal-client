@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { KTIcon } from '../../../../../../_metronic/helpers'
 
 export interface DriverApprehension {
   driverId: number
@@ -29,11 +28,10 @@ const DriversApprehensionCard: React.FC<DriversApprehensionCardProps> = ({
   )
 
   return (
-    <div className='card shadow-sm'>
+    <div className='card shadow-sm w-100 h-100'>
       <div className='card-header bg-primary border-0'>
         <div className='d-flex justify-content-between align-items-center w-100'>
           <div className='d-flex align-items-center'>
-            <KTIcon iconName='database' className='fs-2 text-white me-3' />
             <h3 className='fw-bold text-white mb-0'>
               Drivers Apprehensions
             </h3>

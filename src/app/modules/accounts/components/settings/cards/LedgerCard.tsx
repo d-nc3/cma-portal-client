@@ -3,7 +3,7 @@ import { KTIcon } from '../../../../../../_metronic/helpers'
 
 export interface Transaction {
   date: string
-  type: 'Deposit' | 'Charge'
+  type: 'CREDIT' | 'DEBIT'
   description: string
   amount: number
   balance: number
@@ -37,8 +37,8 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
 
   return (
     <div
-      className='card shadow-sm'
-      style={{ perspective: '1000px', maxWidth: '900px', margin: '0 auto' }}
+      className='card shadow-sm w-100 h-100'
+      style={{ perspective: '1000px'}}
     >
       <div
         style={{
@@ -64,7 +64,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
             <div className='d-flex align-items-center mb-3'>
             <KTIcon iconName='minus-circle' className='fs-2 text-danger me-3' />
               <div>
-                <div className='fw-semibold'>Deposit (Credit)</div>
+                <div className='fw-semibold'>Charges (Credit)</div>
                 <div className='text-muted fs-7'>Accounts Payable</div>
               </div>
             </div>
@@ -72,7 +72,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
             <div className='d-flex align-items-center'>
             <KTIcon iconName='plus-circle' className='fs-2 text-success me-3' />
               <div>
-                <div className='fw-semibold'>(Debit)</div>
+                <div className='fw-semibold'>Deposit (Debit)</div>
                 <div className='text-muted fs-7'>Accounts Receivable</div>
               </div>
             </div>
@@ -106,17 +106,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
               <KTIcon iconName='arrows-left-right' className='me-2' />
               View Transactions
             </button>
-
-            <div>
-              <button className='btn btn-light-secondary me-2'>
-                <KTIcon iconName='printer' className='me-2' />
-                Print
-              </button>
-              <button className='btn btn-light-success'>
-                <KTIcon iconName='download' className='me-2' />
-                Export
-              </button>
-            </div>
+            
           </div>
         </div>
 
@@ -164,7 +154,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
                     <td>
                       <span
                         className={`badge ${
-                          tx.type === 'Deposit'
+                          tx.type === 'DEBIT'
                             ? 'badge-light-success'
                             : 'badge-light-danger'
                         }`}
@@ -175,12 +165,12 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
                     <td>{tx.description}</td>
                     <td
                       className={
-                        tx.type === 'Deposit'
+                        tx.type === 'DEBIT'
                           ? 'text-success fw-bold'
                           : 'text-danger fw-bold'
                       }
                     >
-                      {tx.type === 'Deposit' ? '+' : '-'}₱
+                      {tx.type === 'DEBIT' ? '+' : '-'}₱
                       {Math.abs(tx.amount).toFixed(2)}
                     </td>
                     <td>₱ {tx.balance.toFixed(2)}</td>
