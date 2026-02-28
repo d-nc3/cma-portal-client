@@ -14,10 +14,9 @@ interface DriversDepositLedgerCardProps {
 }
 
 const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
-  transactions: initialTransactions = [],
+  transactions = [],
 }) => {
   const [flipped, setFlipped] = useState(false)
-  const [transactions] = useState<Transaction[]>(initialTransactions)
   const [currentBalance, setCurrentBalance] = useState<number>(0)
 
   useEffect(() => {
@@ -36,10 +35,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
       : 'badge-light-primary'
 
   return (
-    <div
-      className='card shadow-sm w-100 h-100'
-      style={{ perspective: '1000px'}}
-    >
+    <div className='card shadow-sm w-100 h-100' style={{ perspective: '1000px' }}>
       <div
         style={{
           position: 'relative',
@@ -48,10 +44,8 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
         }}
       >
-        <div
-          className='card-body'
-          style={{ backfaceVisibility: 'hidden' }}
-        >
+        {/* Summary Side */}
+        <div className='card-body' style={{ backfaceVisibility: 'hidden' }}>
           <div className='d-flex justify-content-between align-items-center mb-5'>
             <div>
               <h2 className='fw-bold mb-1'>Drivers Deposit Ledger</h2>
@@ -62,7 +56,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
           {/* Account Types */}
           <div className='mb-5'>
             <div className='d-flex align-items-center mb-3'>
-            <KTIcon iconName='minus-circle' className='fs-2 text-danger me-3' />
+              <KTIcon iconName='minus-circle' className='fs-2 text-danger me-3' />
               <div>
                 <div className='fw-semibold'>Charges (Credit)</div>
                 <div className='text-muted fs-7'>Accounts Payable</div>
@@ -70,7 +64,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
             </div>
 
             <div className='d-flex align-items-center'>
-            <KTIcon iconName='plus-circle' className='fs-2 text-success me-3' />
+              <KTIcon iconName='plus-circle' className='fs-2 text-success me-3' />
               <div>
                 <div className='fw-semibold'>Deposit (Debit)</div>
                 <div className='text-muted fs-7'>Accounts Receivable</div>
@@ -86,9 +80,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
                 <KTIcon iconName='scale' className='fs-2 me-3 text-primary' />
                 <div>
                   <div className='fw-semibold'>Balance</div>
-                  <div className='text-muted fs-7'>
-                    Automatically calculated
-                  </div>
+                  <div className='text-muted fs-7'>Automatically calculated</div>
                 </div>
               </div>
               <span className={`badge fs-6 ${balanceClass}`}>
@@ -99,30 +91,21 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
 
           {/* Buttons */}
           <div className='d-flex justify-content-between'>
-            <button
-              className='btn btn-light-primary'
-              onClick={() => setFlipped(true)}
-            >
+            <button className='btn btn-light-primary' onClick={() => setFlipped(true)}>
               <KTIcon iconName='arrows-left-right' className='me-2' />
               View Transactions
             </button>
-            
           </div>
         </div>
 
+        {/* Transaction History Side */}
         <div
           className='card-body position-absolute top-0 start-0 w-100 h-100 bg-white'
-          style={{
-            transform: 'rotateY(180deg)',
-            backfaceVisibility: 'hidden',
-          }}
+          style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
         >
           <div className='d-flex justify-content-between align-items-center mb-5'>
             <h2 className='fw-bold'>Transaction History</h2>
-            <button
-              className='btn btn-light-secondary'
-              onClick={() => setFlipped(false)}
-            >
+            <button className='btn btn-light-secondary' onClick={() => setFlipped(false)}>
               <KTIcon iconName='arrow-left' className='me-2' />
               Back to Summary
             </button>
@@ -154,9 +137,7 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
                     <td>
                       <span
                         className={`badge ${
-                          tx.type === 'DEBIT'
-                            ? 'badge-light-success'
-                            : 'badge-light-danger'
+                          tx.type === 'DEBIT' ? 'badge-light-success' : 'badge-light-danger'
                         }`}
                       >
                         {tx.type}
@@ -164,19 +145,14 @@ const DriversDepositLedgerCard: React.FC<DriversDepositLedgerCardProps> = ({
                     </td>
                     <td>{tx.description}</td>
                     <td
-                      className={
-                        tx.type === 'DEBIT'
-                          ? 'text-success fw-bold'
-                          : 'text-danger fw-bold'
-                      }
+                      className={tx.type === 'DEBIT' ? 'text-success fw-bold' : 'text-danger fw-bold'}
                     >
-                      {tx.type === 'DEBIT' ? '+' : '-'}₱
-                      {Math.abs(tx.amount).toFixed(2)}
+                      {tx.type === 'DEBIT' ? '+' : '-'}₱{Math.abs(tx.amount).toFixed(2)}
                     </td>
                     <td>₱ {tx.balance.toFixed(2)}</td>
                   </tr>
                 ))}
-              </tbody>
+                </tbody>
             </table>
           </div>
         </div>

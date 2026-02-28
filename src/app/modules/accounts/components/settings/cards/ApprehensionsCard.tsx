@@ -91,7 +91,7 @@ const DriversApprehensionCard: React.FC<DriversApprehensionCardProps> = ({
                 <tr key={item.driverId}>
                   <td className='fw-semibold'>{item.driverName}</td>
                   <td>{item.violationType}</td>
-                  <td>{item.ticketExpiry}</td>
+                  <td>{item.ticketExpiry}</td>                  
                   <td>
                     <span
                       className={`badge ${

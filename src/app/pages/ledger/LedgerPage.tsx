@@ -5,17 +5,17 @@ import { getAuth } from '../../modules/auth'
 
 interface Ledger {
   id: string
-  type: 'CREDIT' | 'DEBIT'
+  type: 'DEBIT' | 'CREDIT'
   amount: number
   remarks?: string
-  createdAt: string
+  created_at: string
 }
 
 interface Driver {
   id: string
   fullname: string
   carAssignment: string
-  createdAt: string
+  created_at: string
   ddm_tbl_driverLedgers: Ledger[]
 }
 
@@ -36,10 +36,10 @@ const DriverLedgerPage: FC = () => {
       setLoading(true)
       setError(null)
   
-      // 1️⃣ Try getting token from cookie auth
+      // cookie auth
       let token = getAuth()?.api_token
   
-      // 2️⃣ Fallback to localStorage (for office laptop case)
+      // local storage
       if (!token) {
         token = localStorage.getItem('token') || undefined
       }
@@ -49,7 +49,7 @@ const DriverLedgerPage: FC = () => {
       const res = await axios.get(
         'http://localhost:5000/api/drivers/me',
         {
-          withCredentials: true, // ✅ sends cookies automatically
+          withCredentials: true,
           headers: token
             ? { Authorization: `Bearer ${token}` }
             : undefined,
@@ -57,7 +57,7 @@ const DriverLedgerPage: FC = () => {
       )
   
       const data = res.data
-  
+
       setDriver(data)
       computeTotals(data?.ddm_tbl_driverLedgers || [])
   
@@ -87,7 +87,7 @@ const DriverLedgerPage: FC = () => {
 
     ledgers.forEach((l) => {
       const amount = Number(l.amount) || 0
-      if (l.type === 'CREDIT') {
+      if (l.type === 'DEBIT') {
         deposits += amount
         runningBalance += amount
       } else {
@@ -181,12 +181,12 @@ const DriverLedgerPage: FC = () => {
                 {driver?.ddm_tbl_driverLedgers?.length ? (
                   driver.ddm_tbl_driverLedgers.map((ledger) => (
                     <tr key={ledger.id}>
-                      <td>{new Date(ledger.createdAt).toLocaleDateString()}</td>
+                      <td>{new Date(ledger.created_at).toLocaleDateString()}</td>
                       <td>{ledger.remarks || '-'}</td>
-                      <td className="text-end text-danger">
+                      <td className="text-end text-success">
                         {ledger.type === 'DEBIT' ? formatCurrency(ledger.amount) : '-'}
                       </td>
-                      <td className="text-end text-success">
+                      <td className="text-end text-danger">
                         {ledger.type === 'CREDIT' ? formatCurrency(ledger.amount) : '-'}
                       </td>
                     </tr>

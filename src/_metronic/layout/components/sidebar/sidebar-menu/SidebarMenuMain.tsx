@@ -27,8 +27,8 @@ const SidebarMenuMain = () => {
           </div>
           <SidebarMenuItem to='/apps/drivers/overview' title='My Personal Data' icon='user' />
           <SidebarMenuItem to='/apps/drivers/my-ledger' title='My Deposit Ledger' icon='wallet' />
-          <SidebarMenuItem to='/apps/drivers/my-charges' title='My Charges' icon='Price-tag' />
-          <SidebarMenuItem to='/apps/drivers/my-apprehensions' title='My Apprehensions' icon='clipboard-list' />
+          <SidebarMenuItem to='/apps/drivers/my-contributions' title='My Contributions' icon='tag' />
+          <SidebarMenuItem to='/apps/drivers/my-apprehensions' title='My Apprehensions' icon='clipboard' />
         </>
       )}
       

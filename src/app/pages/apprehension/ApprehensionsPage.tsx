@@ -1,56 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { KTIcon } from '../../../_metronic/helpers'
-
-export type ViolationStatus = 'valid' | 'expiring' | 'expired'
-
-export interface Violation {
-  id: number
-  date: string
-  type: string
-  description: string
-  ticketNumber: string
-  issueDate: string
-  expiryDate: string
-  amount: number
-  status: ViolationStatus
-  settled: boolean
-  receiptUrl?: string | null
-  settledDate?: string
-  settledAmount?: number
-}
-
-const sampleData: Violation[] = [
-  {
-    id: 1,
-    date: '2024-01-15',
-    type: 'OVR - Overloading',
-    description: 'Exceeding maximum allowable load capacity',
-    ticketNumber: 'OVR-2024-001234',
-    issueDate: '2024-01-15',
-    expiryDate: '2024-02-14',
-    amount: 5000,
-    status: 'expiring',
-    settled: false,
-  },
-  {
-    id: 2,
-    date: '2023-12-20',
-    type: 'Unauthorized Route',
-    description: 'Deviation from approved delivery route',
-    ticketNumber: 'OVR-2023-009876',
-    issueDate: '2023-12-20',
-    expiryDate: '2024-01-19',
-    amount: 3000,
-    status: 'expired',
-    settled: true,
-    settledDate: '2024-01-18',
-    settledAmount: 3000,
-    receiptUrl: 'receipt_001.pdf',
-  },
-]
+import { Violation } from './utils/types'
+import { useViolations } from './hooks/useViolations'
+import StatCard from './cards/StatCard'
+import ViolationModal from './modal/ViolationModal'
 
 const DriverApprehensionsPage: React.FC = () => {
-  const [violations, setViolations] = useState<Violation[]>(sampleData)
+  const { violations, setViolations, loading, error } = useViolations()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedViolation, setSelectedViolation] = useState<Violation | null>(null)
@@ -59,7 +15,7 @@ const DriverApprehensionsPage: React.FC = () => {
     return violations.filter((v) => {
       const matchesSearch =
         v.ticketNumber.toLowerCase().includes(search.toLowerCase()) ||
-        v.type.toLowerCase().includes(search.toLowerCase())
+        v.violationType.toLowerCase().includes(search.toLowerCase())
 
       if (statusFilter === 'all') return matchesSearch
       if (statusFilter === 'settled') return matchesSearch && v.settled
@@ -67,14 +23,12 @@ const DriverApprehensionsPage: React.FC = () => {
     })
   }, [violations, search, statusFilter])
 
-  const stats = useMemo(() => {
-    return {
-      total: violations.length,
-      pending: violations.filter((v) => !v.settled).length,
-      settled: violations.filter((v) => v.settled).length,
-      expiring: violations.filter((v) => v.status === 'expiring' && !v.settled).length,
-    }
-  }, [violations])
+  const stats = useMemo(() => ({
+    total: violations.length,
+    pending: violations.filter((v) => !v.settled).length,
+    settled: violations.filter((v) => v.settled).length,
+    expiring: violations.filter((v) => v.status === 'expiring' && !v.settled).length,
+  }), [violations])
 
   const markAsSettled = () => {
     if (!selectedViolation) return
@@ -82,18 +36,16 @@ const DriverApprehensionsPage: React.FC = () => {
     setViolations((prev) =>
       prev.map((v) =>
         v.id === selectedViolation.id
-          ? {
-              ...v,
-              settled: true,
-              settledDate: new Date().toISOString(),
-              receiptUrl: 'uploaded_receipt.pdf',
-            }
+          ? { ...v, settled: true, settledDate: new Date().toISOString(), receiptUrl: 'uploaded_receipt.pdf' }
           : v
       )
     )
-
+    
     setSelectedViolation(null)
   }
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div className='text-danger'>{error}</div>
 
   return (
     <div className='container-fluid'>
@@ -162,21 +114,26 @@ const DriverApprehensionsPage: React.FC = () => {
                 {filteredData.map((v) => (
                   <tr key={v.id}>
                     <td>
-                      <div className='fw-bold'>{v.type}</div>
-                      <div className='text-muted fs-7'>{v.description}</div>
+                      <div className='fw-bold fs-4'>{v.violationType}</div>
                     </td>
 
                     <td>
-                      <div className='badge badge-light-primary'>{v.ticketNumber}</div>
+                      <div className='badge badge-light-primary'>
+                        {v.ticketNumber}
+                      </div>
                       <div className='text-muted fs-7'>
                         ₱{v.amount.toLocaleString()}
                       </div>
                     </td>
 
                     <td>
-                      <span className={`badge badge-light-${getStatusColor(v.status)}`}>
-                        {v.status.toUpperCase()}
-                      </span>
+                      <div className='fw-bold fs-5'>
+                        {new Date(v.ticketExpiry).toLocaleDateString('en-PH', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: '2-digit',
+                        })}
+                      </div>
                     </td>
 
                     <td>
@@ -217,85 +174,32 @@ const DriverApprehensionsPage: React.FC = () => {
 
       {/* Modal */}
       {selectedViolation && (
-        <div className='modal fade show d-block' tabIndex={-1}>
-          <div className='modal-dialog'>
-            <div className='modal-content'>
-              <div className='modal-header'>
-                <h5 className='modal-title'>
-                  Upload Settlement - {selectedViolation.ticketNumber}
-                </h5>
-                <button
-                  className='btn btn-sm btn-icon'
-                  onClick={() => setSelectedViolation(null)}
-                >
-                  ✕
-                </button>
-              </div>
-              <div className='modal-body'>
-                <input
-                  type='number'
-                  className='form-control mb-4'
-                  placeholder='Settlement Amount'
-                />
-                <input type='date' className='form-control mb-4' />
-                <input type='file' className='form-control' />
-              </div>
-              <div className='modal-footer'>
-                <button
-                  className='btn btn-light'
-                  onClick={() => setSelectedViolation(null)}
-                >
-                  Cancel
-                </button>
-                <button className='btn btn-primary' onClick={markAsSettled}>
-                  Confirm Settlement
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ViolationModal
+          violation={selectedViolation}
+          onClose={() => setSelectedViolation(null)}
+          onConfirm={(amount, date, file) => {
+            // update violation as settled
+            if (!selectedViolation) return
+
+            setViolations(prev =>
+              prev.map(v =>
+                v.id === selectedViolation.id
+                  ? {
+                      ...v,
+                      settled: true,
+                      settledDate: date || new Date().toISOString(),
+                      receiptUrl: file?.name || 'uploaded_receipt.pdf',
+                      amount,
+                    }
+                  : v
+              )
+            )
+          setSelectedViolation(null)
+          }}
+        />
       )}
     </div>
   )
-}
-
-const StatCard = ({
-  title,
-  value,
-  icon,
-  color,
-}: {
-  title: string
-  value: number
-  icon: string
-  color: string
-}) => (
-  <div className='col-md-3'>
-    <div className='card card-flush'>
-      <div className='card-body d-flex justify-content-between'>
-        <div>
-          <div className='text-muted fw-semibold'>{title}</div>
-          <div className='fs-2 fw-bold'>{value}</div>
-        </div>
-        <div className={`symbol symbol-50px bg-light-${color}`}>
-          <KTIcon iconName={icon} className={`fs-2 text-${color}`} />
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
-const getStatusColor = (status: ViolationStatus) => {
-  switch (status) {
-    case 'valid':
-      return 'success'
-    case 'expiring':
-      return 'warning'
-    case 'expired':
-      return 'danger'
-    default:
-      return 'primary'
-  }
 }
 
 export default DriverApprehensionsPage

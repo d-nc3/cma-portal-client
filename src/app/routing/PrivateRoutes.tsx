@@ -39,7 +39,7 @@ const LedgerPage = lazy(() =>
   import('../pages/ledger/LedgerPage').then(module => ({ default: module.default }))
 );
 const ApprehensionPage = lazy(() =>
-  import('../pages/apprehension/ApprehensionPage').then(module => ({ default: module.default }))
+  import('../pages/apprehension/ApprehensionsPage').then(module => ({ default: module.default }))
 );
 
 interface AppRoute {
