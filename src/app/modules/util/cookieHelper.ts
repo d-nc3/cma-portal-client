@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie';
 import { CookieOptions } from '../../../types/utilTypes';
 
+const isSecureContext = typeof window !== 'undefined' && window.location.protocol === 'https:';
+
 export const setCookie = (
   name: string,
   value: string,
@@ -10,7 +12,7 @@ export const setCookie = (
     const defaultOptions: CookieOptions = {
       expires: 7, // 7 days
       path: '/',
-      secure: true,
+      secure: isSecureContext,
       sameSite: 'strict',
       ...options
     };

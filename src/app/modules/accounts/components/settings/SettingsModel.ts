@@ -1,19 +1,17 @@
 export interface IProfileDetails {
-  avatar: string
-  fName: string
-  lName: string
-  company: string
-  contactPhone: string
-  companySite: string
-  country: string
-  language: string
-  timeZone: string
-  currency: string
-  communications: {
-    email: boolean
-    phone: boolean
-  }
-  allowMarketing: boolean
+  fullname: string
+  callSign: string
+  address: string
+  contactNumber: string
+  carAssignment: string
+  spouseName?: string
+  spouseContact?: string
+  sssNumber?: string
+  philhealthNumber?: string
+  pagibigNumber?: string
+  licenseNumber: string
+  licenseExpiry: string
+  licenseImageUrl?: string
 }
 
 export interface IUpdateEmail {
@@ -71,21 +69,19 @@ export interface IDeactivateAccount {
 }
 
 export const profileDetailsInitValues: IProfileDetails = {
-  avatar: '/media/avatars/300-1.jpg',
-  fName: 'Max',
-  lName: 'Smith',
-  company: 'Keenthemes',
-  contactPhone: '044 3276 454 935',
-  companySite: 'keenthemes.com',
-  country: '',
-  language: '',
-  timeZone: '',
-  currency: '',
-  communications: {
-    email: false,
-    phone: false,
-  },
-  allowMarketing: false,
+  fullname: '',
+  callSign: '',
+  address: '',
+  contactNumber: '',
+  carAssignment: '',
+  spouseName: '',
+  spouseContact: '',
+  sssNumber: '',
+  philhealthNumber: '',
+  pagibigNumber: '',
+  licenseNumber: '',
+  licenseExpiry: '',
+  licenseImageUrl: '',
 }
 
 export const updateEmail: IUpdateEmail = {

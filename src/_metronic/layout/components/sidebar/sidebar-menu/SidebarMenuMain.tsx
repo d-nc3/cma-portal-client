@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React from 'react'
 import {useIntl} from 'react-intl'
-import {KTIcon} from '../../../../helpers'
 import {SidebarMenuItemWithSub} from './SidebarMenuItemWithSub'
 import {SidebarMenuItem} from './SidebarMenuItem'
 import {useAuth} from '../../../../../app/modules/auth'
@@ -26,12 +25,13 @@ const SidebarMenuMain = () => {
               <span className='menu-section text-muted text-uppercase fs-8 ls-1'>My Information</span>
             </div>
           </div>
-          <SidebarMenuItem to='/apps/drivers/my-info' title='My Personal Data' icon='user' />
+          <SidebarMenuItem to='/apps/drivers/overview' title='My Personal Data' icon='user' />
           <SidebarMenuItem to='/apps/drivers/my-ledger' title='My Deposit Ledger' icon='wallet' />
           <SidebarMenuItem to='/apps/drivers/my-charges' title='My Charges' icon='Price-tag' />
+          <SidebarMenuItem to='/apps/drivers/my-apprehensions' title='My Apprehensions' icon='clipboard-list' />
         </>
       )}
-
+      
       {hasRole(['dispatcher', 'admin']) && (
         <>
           <div className='menu-item'>

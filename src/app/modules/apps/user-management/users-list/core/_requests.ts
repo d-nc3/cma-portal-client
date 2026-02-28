@@ -13,9 +13,10 @@ export const DELETE_USER_URL = `${API_URL}/api/users/delete`
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config) => {
+    config.headers = config.headers ?? {}
     const auth = getAuth()
-    if (auth && auth.token) {
-      config.headers.Authorization = `Bearer ${auth.token}`
+    if (auth && auth.api_token) {
+      config.headers.Authorization = `Bearer ${auth.api_token}`
     }
     return config
   },
