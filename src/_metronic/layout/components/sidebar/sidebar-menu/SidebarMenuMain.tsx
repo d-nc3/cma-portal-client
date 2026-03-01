@@ -83,10 +83,8 @@ const SidebarMenuMain = () => {
           </SidebarMenuItemWithSub>
 
           <SidebarMenuItemWithSub to='/apps/dispatch' title='Dispatcher' icon='delivery-2' fontIcon='bi-geo-alt'>
-            <SidebarMenuItem to='/apps/dispatch/execution' title='Dispatch Execution' hasBullet={true} />
-            <SidebarMenuItem to='/apps/dispatch/window' title='Window Display' hasBullet={true} />
-            <SidebarMenuItem to='/apps/dispatch/checklist' title='Pre-Dispatch Checklist' hasBullet={true} />
-            <SidebarMenuItem to='/apps/dispatch/reports' title='Dispatch Reports' hasBullet={true} />
+            <SidebarMenuItem to='/apps/dispatch/' title='Dispatch Execution' hasBullet={true} />
+            <SidebarMenuItem to='/apps/dispatch/reports' title='Dispatch Reports - Daily' hasBullet={true} />
           </SidebarMenuItemWithSub>
         </>
       )}

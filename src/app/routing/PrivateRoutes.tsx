@@ -39,6 +39,10 @@ const LedgerPage = lazy(() =>
   import('../pages/ledger/LedgerPage').then(module => ({ default: module.default }))
 );
 
+const DispatchPage = lazy(() =>
+  import('../modules/apps/dispatch/DispatchPage').then(module => ({ default: module.default }))
+);
+
 interface AppRoute {
   path: string
   element: React.ReactNode
@@ -52,7 +56,7 @@ const routesConfig: AppRoute[] = [
   { path: 'menu-test', element: <MenuTestPage />, roles: ['admin'] },
   { path: 'apps/user-management/*', element: <UsersPage />, roles: ['admin'], isSuspensed: true },
   { path: 'crafted/pages/profile/*', element: <ProfilePage />, roles: ['admin', 'dispatcher'], isSuspensed: true },
-  { path: 'apps/drivers/overview', element: <Overview />, roles: ['driver'], isSuspensed: true },
+  { path: 'apps/drivers/overview', element: <Overview />, roles: ['driver', 'admin'], isSuspensed: true },
   { path: 'apps/chat/*', element: <ChatPage />, roles: ['admin', 'driver'], isSuspensed: true },
   { path: 'crafted/widgets/*', element: <WidgetsPage />, roles: ['admin', 'inventory'], isSuspensed: true },
   { path: 'crafted/account/*', element: <AccountPage />, isSuspensed: true },
@@ -60,7 +64,13 @@ const routesConfig: AppRoute[] = [
   { 
     path: 'apps/drivers/my-ledger', 
     element: <LedgerPage />, 
-    roles: ['driver'],   // only drivers can access
+    roles: ['driver', 'admin'],   // only drivers can access
+    isSuspensed: true 
+  },
+  { 
+    path: 'apps/dispatch/*', 
+    element: <DispatchPage />, 
+    roles: ['dispatcher', 'admin'],   // only dispatchers can access
     isSuspensed: true 
   },
 ]
