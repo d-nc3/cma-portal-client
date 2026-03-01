@@ -1,12 +1,14 @@
+import {useEffect, useState} from 'react' // Added useState
 import {Route, Routes, Outlet, Navigate} from 'react-router-dom'
 import {PageTitle, PageLink} from '../../../../_metronic/layout/core'
 import {VehicleTable} from './vehicle-list/VehicleTable'
-import {AddVehicleForm} from './vehicle-list/AddVehicleForm' // Import your form
-import { DamageHistoryTable } from './damage-history/DamageHistoryTable'
-import { VehicleOverview } from './overview/VehicleOverview'
-import { AddVehicleDamageForm } from  './overview/AddVehicleDamageForm'
+import {AddVehicleForm} from './vehicle-list/AddVehicleForm'
+import {DamageHistoryTable} from './damage-history/DamageHistoryTable'
+import {VehicleOverview} from './overview/VehicleOverview'
+import {AddVehicleDamageForm} from './overview/AddVehicleDamageForm'
+import {VehicleReports} from './reports/VehicleReports'
+import {getDamageHistory} from './core/_requests' // Ensure this is imported
 
-// Base breadcrumb for the module
 const vehicleBreadcrumbs: Array<PageLink> = [
   {
     title: 'Vehicle Management',
@@ -23,24 +25,40 @@ const vehicleBreadcrumbs: Array<PageLink> = [
 ]
 
 const VehiclesPage = () => {
-  // Mock data - eventually this will come from an API via useQuery
-  const vehicleData = [
-    {id: 1, plate: 'ABC-1234', year: '2021', registration: 'ABC-1234', model: 'Toyota Hiace', driver: 'John Doe', fuel: '75%', status: 'Active'},
-    {id: 2, plate: 'XYZ-5678', year: '2021', registration: 'XYZ-5678', model: 'Ford Ranger', driver: 'N/A', fuel: '40%', status: 'Maintenance'},
-  ]
+  const [data, setData] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await getDamageHistory()
+        const result = response.data?.data || response.data
+        setData(Array.isArray(result) ? result : result ? [result] : [])
+      } catch (error) {
+        console.error('Error fetching:', error)
+        setData([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchVehicles()
+  }, [])
 
   return (
     <Routes>
       <Route element={<Outlet />}>
+        {/* Main List */}
         <Route
           path='vehicle-list'
           element={
             <>
               <PageTitle breadcrumbs={vehicleBreadcrumbs}>Vehicle Information</PageTitle>
-              <VehicleTable data={vehicleData} />
+              <VehicleTable />
             </>
           }
         />
+
+        {/* Add New Vehicle */}
         <Route
           path='add'
           element={
@@ -50,25 +68,20 @@ const VehiclesPage = () => {
             </>
           }
         />
+
+        {/* Global Damage History */}
         <Route
           path='damage-history'
           element={
             <>
               <PageTitle breadcrumbs={vehicleBreadcrumbs}>Damage History</PageTitle>
-              <DamageHistoryTable data={vehicleData} />
+              <DamageHistoryTable data={data} />
             </>
           }
         />
-         <Route
-          path='view'
-          element={
-            <>
-              <PageTitle breadcrumbs={vehicleBreadcrumbs}>Vehicle Information</PageTitle>
-              <VehicleOverview />
-            </>
-          }
-        />
-          <Route
+
+        {/* Add Damage - Adjusted path to match your Table Link */}
+        <Route
           path='overview/add'
           element={
             <>
@@ -77,11 +90,31 @@ const VehiclesPage = () => {
             </>
           }
         />
+
+        {/* View Specific Vehicle - Fixed duplicate/conflicting route */}
+        <Route
+          path='view/:id/*'
+          element={
+            <>
+              <PageTitle breadcrumbs={vehicleBreadcrumbs}>Vehicle Overview</PageTitle>
+              <VehicleOverview />
+            </>
+          }
+        />
+
+         <Route
+          path='reports/*'
+          element={
+            <>
+              <PageTitle breadcrumbs={vehicleBreadcrumbs}>Analytics & Reports</PageTitle>
+              <VehicleReports />
+            </>
+          }
+        />
+
+        {/* Default Redirects */}
         <Route index element={<Navigate to='/apps/vehicle-management/vehicle-list' />} />
         <Route path='*' element={<Navigate to='/apps/vehicle-management/vehicle-list' />} />
-        <Route path='view/:id/*' element={<VehicleOverview />} />
-        
-        <Route index element={<Navigate to='/apps/vehicle-management/vehicle-list' />} />
       </Route>
     </Routes>
   )

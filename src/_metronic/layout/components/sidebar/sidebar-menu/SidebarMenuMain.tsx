@@ -79,7 +79,9 @@ const SidebarMenuMain = () => {
           <SidebarMenuItemWithSub to='/apps/fleet' title='Car Master List' icon='bus' fontIcon='bi-truck'>
             <SidebarMenuItem to='/apps/vehicle-management/vehicle-list' title='Vehicle Information' hasBullet={true} />
             <SidebarMenuItem to='/apps/vehicle-management/damage-history' title='Damage History' hasBullet={true} />
-            <SidebarMenuItem to='/apps/fleet/reports' title='Vehicle Reports' hasBullet={true} />
+            <SidebarMenuItem to='/apps/fleet/reports' title='Fleet Reports' hasBullet={true} />
+            <SidebarMenuItem to='/apps/vehicle-management/reports' title='Vehicle Reports' hasBullet={true} />
+            
           </SidebarMenuItemWithSub> 
 
           <SidebarMenuItemWithSub to='/apps/dispatch' title='Dispatcher' icon='delivery-2' fontIcon='bi-geo-alt'>
